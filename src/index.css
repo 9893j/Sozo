@@ -1,0 +1,94 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-stone-950 text-stone-100 font-sans antialiased;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-serif;
+    line-height: 1.2;
+  }
+
+  ::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-stone-700 rounded;
+  }
+}
+
+@layer components {
+  /* Botões base */
+  .btn-gold {
+    @apply bg-gold text-stone-950 font-semibold px-6 py-3 rounded-sm
+           transition-all duration-200 hover:bg-gold-light hover:-translate-y-0.5
+           hover:shadow-[0_8px_24px_rgba(200,169,110,0.35)] active:translate-y-0;
+  }
+
+  .btn-outline {
+    @apply bg-transparent text-stone-100 font-medium px-6 py-3 rounded-sm
+           border border-white/20 transition-all duration-200
+           hover:border-gold hover:text-gold active:scale-95;
+  }
+
+  .btn-ghost {
+    @apply bg-transparent text-stone-300 font-medium px-4 py-2 rounded-sm
+           transition-all duration-200 hover:bg-white/5 hover:text-stone-100;
+  }
+
+  /* Inputs admin */
+  .field {
+    @apply w-full bg-stone-800 border border-stone-700 rounded-sm px-3 py-2.5
+           text-stone-100 text-sm placeholder:text-stone-500 outline-none
+           transition-all duration-200
+           focus:border-gold focus:shadow-[0_0_0_3px_rgba(200,169,110,0.1)];
+  }
+
+  /* Cards admin */
+  .card {
+    @apply bg-stone-900 border border-stone-800 rounded-lg p-5;
+  }
+
+  /* Badge */
+  .badge {
+    @apply inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full;
+  }
+  .badge-gold   { @apply bg-gold/15 text-gold; }
+  .badge-green  { @apply bg-emerald/20 text-emerald-light; }
+  .badge-rose   { @apply bg-rose/20 text-rose-light; }
+  .badge-sky    { @apply bg-sky/20 text-sky-light; }
+
+  /* Sidebar item */
+  .sb-item {
+    @apply flex items-center gap-2.5 px-3 py-2 mx-2 rounded-sm cursor-pointer
+           text-sm font-medium text-stone-500 transition-all duration-200
+           hover:bg-stone-800 hover:text-stone-100 border-none bg-transparent w-[calc(100%-16px)] text-left;
+  }
+  .sb-item.active {
+    @apply bg-gold/10 text-gold-light border-l-2 border-gold;
+  }
+
+  /* Animações */
+  @keyframes pulse-dot {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50%       { transform: scale(1.4); opacity: 0.5; }
+  }
+  @keyframes live-blink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.2; }
+  }
+  .animate-pulse-dot  { animation: pulse-dot 2s infinite; }
+  .animate-live-blink { animation: live-blink 1s infinite; }
+}
