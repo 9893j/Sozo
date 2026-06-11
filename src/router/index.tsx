@@ -22,11 +22,13 @@ import UsersPage         from '@/pages/admin/UsersPage'
 import ProfilePage       from '@/pages/admin/ProfilePage'
 
 export const router = createBrowserRouter([
-  // ── Rotas públicas ──────────────────────────
+  // ── Landing — nav próprio, sem PublicLayout ─
+  { path: '/', element: <LandingPage /> },
+
+  // ── Outras páginas públicas ──────────────────
   {
     element: <PublicLayout />,
     children: [
-      { path: '/',      element: <LandingPage /> },
       { path: '/login', element: <LoginPage /> },
     ],
   },

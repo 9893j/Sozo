@@ -3,11 +3,11 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '@/features/auth/AuthContext'
 
 const NAV_LINKS = [
-  { label: 'Sobre',      href: '#sobre' },
-  { label: 'Cultos',     href: '#rotina' },
-  { label: 'Eventos',    href: '#eventos' },
-  { label: 'Comunidade', href: '#comunicacao' },
-  { label: 'Ao Vivo',    href: '#live' },
+  { label: 'Sobre',       href: '#sobre' },
+  { label: 'Cultos',      href: '#rotina' },
+  { label: 'Eventos',     href: '#eventos' },
+  { label: 'Comunidade',  href: '#comunicacao' },
+  { label: 'Ao Vivo',     href: '#live' },
 ]
 
 export default function PublicNav() {
@@ -27,50 +27,49 @@ export default function PublicNav() {
 
   return (
     <nav
-      className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between transition-all duration-300"
-      style={{
-        padding: '0 5%',
-        height: '68px',
-        background: scrolled ? 'rgba(12,11,9,0.92)' : 'transparent',
-        backdropFilter: scrolled ? 'blur(16px)' : 'none',
-        borderBottom: scrolled ? '1px solid rgba(200,169,110,0.12)' : 'none',
-      }}
+      className={`fixed top-0 left-0 right-0 z-50 px-[5%] h-[68px] flex items-center justify-between transition-all duration-300 ${
+        scrolled
+          ? 'bg-stone-950/92 backdrop-blur-md border-b border-gold/10'
+          : ''
+      }`}
     >
       {/* Logo */}
-      <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none' }}>
-        <div
-          style={{
-            width: 36, height: 36, borderRadius: 10,
-            background: 'linear-gradient(135deg, #C8A96E, #9A7D4A)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontFamily: '"Playfair Display", serif', fontSize: 16, fontWeight: 900,
-            color: '#0C0B09',
-          }}
-        >
+      <Link to="/" className="flex items-center gap-2.5 no-underline">
+        <div className="w-9 h-9 rounded-[10px] bg-gradient-to-br from-gold to-gold-dark flex items-center justify-center font-serif font-black text-stone-950 text-base">
           S
         </div>
-        <span style={{ fontFamily: '"Playfair Display", serif', fontSize: 20, fontWeight: 700, color: '#E2C898' }}>
-          Sozo Church
-        </span>
+        <span className="font-serif text-xl font-bold text-gold-light">Sozo Church</span>
       </Link>
 
       {/* Links */}
       <div className="hidden md:flex items-center gap-1">
         {NAV_LINKS.map(link => (
-          <button key={link.href} onClick={() => scrollTo(link.href)} className="btn-ghost">
+          <button
+            key={link.href}
+            onClick={() => scrollTo(link.href)}
+            className="btn-ghost text-sm"
+          >
             {link.label}
           </button>
         ))}
       </div>
 
       {/* CTA */}
-      <button
-        onClick={() => navigate(firebaseUser ? '/admin' : '/login')}
-        className="btn-gold"
-        style={{ padding: '8px 20px', fontSize: 14 }}
-      >
-        {firebaseUser ? 'Painel →' : 'Entrar'}
-      </button>
+      {firebaseUser ? (
+        <button
+          onClick={() => navigate('/admin')}
+          className="btn-gold text-sm py-2 px-5"
+        >
+          Painel →
+        </button>
+      ) : (
+        <button
+          onClick={() => navigate('/login')}
+          className="btn-gold text-sm py-2 px-5"
+        >
+          Entrar
+        </button>
+      )}
     </nav>
   )
 }

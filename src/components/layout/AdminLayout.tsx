@@ -2,26 +2,22 @@ import { useState } from 'react'
 import { Outlet, NavLink, useNavigate } from 'react-router-dom'
 import { useAuth } from '@/features/auth/AuthContext'
 import { logOut } from '@/firebase/auth'
+import { SozoLogo } from '@/components/ui'
+import { C } from '@/lib/tokens'
 
-interface NavItem {
-  to:       string
-  icon:     string
-  label:    string
-  section?: string
-  roles?:   string[]
-}
+interface NavItem { to: string; icon: string; label: string; section?: string; roles?: string[] }
 
 const NAV_ITEMS: NavItem[] = [
-  { to: '/admin',              icon: '▦',  label: 'Dashboard',    section: 'Visão Geral' },
-  { to: '/admin/membros',      icon: '👥', label: 'Membros',      section: 'Igreja' },
-  { to: '/admin/ministerios',  icon: '⛪', label: 'Ministérios' },
-  { to: '/admin/escalas',      icon: '📋', label: 'Escalas' },
-  { to: '/admin/eventos',      icon: '📅', label: 'Eventos' },
-  { to: '/admin/oracao',       icon: '🙏', label: 'Oração',       section: 'Comunidade' },
-  { to: '/admin/comunicados',  icon: '📢', label: 'Comunicados' },
-  { to: '/admin/transmissao',  icon: '📡', label: 'Transmissão' },
-  { to: '/admin/usuarios',     icon: '🔐', label: 'Usuários',     section: 'Administração', roles: ['pastor', 'super_admin'] },
-  { to: '/admin/perfil',       icon: '👤', label: 'Meu Perfil',   section: 'Conta' },
+  { to:'/admin',             icon:'▦',  label:'Dashboard',   section:'Visão Geral' },
+  { to:'/admin/membros',     icon:'👥', label:'Membros',     section:'Igreja' },
+  { to:'/admin/ministerios', icon:'⛪', label:'Ministérios' },
+  { to:'/admin/escalas',     icon:'📋', label:'Escalas' },
+  { to:'/admin/eventos',     icon:'📅', label:'Eventos' },
+  { to:'/admin/oracao',      icon:'🙏', label:'Oração',      section:'Comunidade' },
+  { to:'/admin/comunicados', icon:'📢', label:'Comunicados' },
+  { to:'/admin/transmissao', icon:'📡', label:'Transmissão' },
+  { to:'/admin/usuarios',    icon:'🔐', label:'Usuários',    section:'Administração', roles:['pastor','super_admin'] },
+  { to:'/admin/perfil',      icon:'👤', label:'Meu Perfil',  section:'Conta' },
 ]
 
 export default function AdminLayout() {
@@ -34,98 +30,89 @@ export default function AdminLayout() {
     navigate('/')
   }
 
-  const visibleItems = NAV_ITEMS.filter(item =>
-    !item.roles || (role && item.roles.includes(role))
-  )
+  const visible = NAV_ITEMS.filter(i => !i.roles || (role && i.roles.includes(role)))
 
   return (
-    <div className="flex h-screen overflow-hidden bg-stone-950">
+    <div style={{ display:'flex', height:'100vh', overflow:'hidden', background:C.bg, fontFamily:'"Inter",system-ui,sans-serif' }}>
+
       {/* Overlay mobile */}
       {sidebarOpen && (
-        <div
-          className="fixed inset-0 bg-black/60 z-30 md:hidden"
-          onClick={() => setSidebarOpen(false)}
-        />
+        <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.7)', zIndex:30 }} onClick={() => setSidebarOpen(false)} />
       )}
 
-      {/* Sidebar */}
-      <aside
-        className={`
-          fixed md:static z-40 h-full w-64 bg-stone-950 border-r border-stone-800
-          flex flex-col overflow-y-auto transition-transform duration-200
-          ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
-        `}
-      >
+      {/* ── Sidebar ─────────────────────────── */}
+      <aside style={{
+        position:'fixed', top:0, bottom:0, left:0, zIndex:40,
+        width:232, background:'#080503',
+        borderRight:`1px solid ${C.line}`,
+        display:'flex', flexDirection:'column', overflowY:'auto',
+        transform: sidebarOpen ? 'translateX(0)' : undefined,
+        transition:'transform 0.2s ease',
+      }} className={sidebarOpen ? '' : 'md-sidebar'}>
+
         {/* Logo */}
-        <div className="px-4 py-5 border-b border-stone-800 flex items-center gap-2.5">
-          <div className="w-[34px] h-[34px] rounded-[9px] bg-gradient-to-br from-gold to-gold-dark flex items-center justify-center font-serif font-black text-stone-950 text-sm">
-            S
-          </div>
-          <div>
-            <div className="font-serif text-[17px] font-bold text-gold-light">Sozo</div>
-            <div className="text-[10px] text-stone-500 font-sans">Painel da Igreja</div>
-          </div>
+        <div style={{ padding:'18px 16px', borderBottom:`1px solid ${C.line}` }}>
+          <SozoLogo size={30} />
         </div>
 
         {/* Nav */}
-        <nav className="flex-1 py-3">
-          <SidebarNav items={visibleItems} onClose={() => setSidebarOpen(false)} />
+        <nav style={{ flex:1, paddingTop:8, paddingBottom:8 }}>
+          <SidebarNav items={visible} onClose={() => setSidebarOpen(false)} />
         </nav>
 
-        {/* User footer */}
-        <div className="p-4 border-t border-stone-800">
-          <div className="flex items-center gap-2.5 mb-3">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-gold to-gold-dark flex items-center justify-center font-serif font-bold text-stone-950 text-sm flex-shrink-0">
+        {/* User */}
+        <div style={{ padding:'14px 16px', borderTop:`1px solid ${C.line}` }}>
+          <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:10 }}>
+            <div style={{ width:32, height:32, borderRadius:'50%', background:`linear-gradient(135deg, ${C.primary}, ${C.primaryL})`, display:'flex', alignItems:'center', justifyContent:'center', fontWeight:900, fontSize:13, color:C.white, flexShrink:0 }}>
               {appUser?.displayName?.[0] ?? '?'}
             </div>
-            <div className="min-w-0">
-              <div className="text-sm font-semibold text-stone-100 truncate">{appUser?.displayName}</div>
-              <div className="text-[11px] text-gold capitalize">{appUser?.role?.replace('_', ' ')}</div>
+            <div style={{ minWidth:0 }}>
+              <div style={{ fontSize:13, fontWeight:600, color:C.white, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{appUser?.displayName}</div>
+              <div style={{ fontSize:11, color:C.primary, textTransform:'capitalize' }}>{appUser?.role?.replace('_',' ')}</div>
             </div>
           </div>
-          <button
-            onClick={handleLogout}
-            className="w-full text-left text-sm text-stone-500 hover:text-rose-light transition-colors py-1"
-          >
-            ← Sair
-          </button>
+          <button onClick={handleLogout} style={{ background:'none', border:'none', color:C.gray3, fontSize:13, cursor:'pointer', padding:0, transition:'color 0.2s' }}
+            onMouseEnter={e => (e.currentTarget.style.color='#E07A8A')}
+            onMouseLeave={e => (e.currentTarget.style.color=C.gray3)}
+          >← Sair</button>
         </div>
       </aside>
 
-      {/* Main */}
-      <div className="flex-1 flex flex-col overflow-hidden">
+      {/* ── Main ────────────────────────────── */}
+      <div style={{ flex:1, display:'flex', flexDirection:'column', overflow:'hidden', marginLeft:232 }}>
         {/* Mobile topbar */}
-        <header className="md:hidden flex items-center gap-3 px-4 py-3 border-b border-stone-800">
-          <button
-            onClick={() => setSidebarOpen(true)}
-            className="text-stone-300 text-xl"
-          >
-            ☰
-          </button>
-          <span className="font-serif font-bold text-gold-light">Sozo</span>
+        <header style={{ display:'none', alignItems:'center', gap:12, padding:'12px 16px', borderBottom:`1px solid ${C.line}`, background:'#080503' }} className="mobile-header">
+          <button onClick={() => setSidebarOpen(true)} style={{ background:'none', border:'none', color:C.gray1, fontSize:20, cursor:'pointer', minWidth:40, minHeight:40 }}>☰</button>
+          <SozoLogo size={26} />
         </header>
 
-        <main className="flex-1 overflow-y-auto p-6">
+        <main style={{ flex:1, overflowY:'auto', padding:28 }}>
           <Outlet />
         </main>
       </div>
+
+      <style>{`
+        @media (max-width: 768px) {
+          .md-sidebar { transform: translateX(-100%); }
+          .mobile-header { display: flex !important; }
+          div[style*="margin-left: 232px"] { margin-left: 0 !important; }
+        }
+      `}</style>
     </div>
   )
 }
 
 function SidebarNav({ items, onClose }: { items: NavItem[]; onClose: () => void }) {
   let lastSection = ''
-
   return (
     <>
       {items.map(item => {
         const showSection = item.section && item.section !== lastSection
         if (item.section) lastSection = item.section
-
         return (
           <div key={item.to}>
             {showSection && (
-              <div className="px-4 pt-5 pb-1.5 text-[10px] font-semibold tracking-[2px] uppercase text-stone-500">
+              <div style={{ padding:'16px 20px 6px', fontSize:10, fontWeight:700, letterSpacing:'3px', textTransform:'uppercase', color:C.gray3 }}>
                 {item.section}
               </div>
             )}
@@ -133,11 +120,9 @@ function SidebarNav({ items, onClose }: { items: NavItem[]; onClose: () => void 
               to={item.to}
               end={item.to === '/admin'}
               onClick={onClose}
-              className={({ isActive }) =>
-                `sb-item ${isActive ? 'active' : ''}`
-              }
+              className={({ isActive }) => `sb-item${isActive ? ' active' : ''}`}
             >
-              <span className="w-[17px] text-center text-sm flex-shrink-0">{item.icon}</span>
+              <span style={{ width:18, textAlign:'center', fontSize:14, flexShrink:0 }}>{item.icon}</span>
               {item.label}
             </NavLink>
           </div>
