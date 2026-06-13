@@ -16,7 +16,7 @@ const NAV_ITEMS: NavItem[] = [
   { to:'/admin/oracao',      icon:'🙏', label:'Oração',      section:'Comunidade' },
   { to:'/admin/comunicados', icon:'📢', label:'Comunicados' },
   { to:'/admin/transmissao', icon:'📡', label:'Transmissão' },
-  { to:'/admin/usuarios',    icon:'🔐', label:'Usuários',    section:'Administração', roles:['pastor','super_admin'] },
+  { to:'/admin/usuarios',    icon:'🔐', label:'Usuários',    section:'Administração' },
   { to:'/admin/perfil',      icon:'👤', label:'Meu Perfil',  section:'Conta' },
 ]
 

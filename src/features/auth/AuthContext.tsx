@@ -10,6 +10,7 @@ interface AuthContextValue {
   loading:      boolean
   role:         UserRole | null
   can:          (permission: string) => boolean
+  refetch:      () => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null)
@@ -19,20 +20,49 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [appUser, setAppUser]           = useState<AppUser | null>(null)
   const [loading, setLoading]           = useState(true)
 
+  async function fetchProfile(user: User) {
+    try {
+      // timeout de 8s — evita spinner infinito se Firestore estiver offline
+      const profile = await Promise.race([
+        getUserProfile(user.uid),
+        new Promise<null>((_, reject) =>
+          setTimeout(() => reject(new Error('timeout')), 8000)
+        ),
+      ]) as AppUser | null
+      setAppUser(profile)
+    } catch (err) {
+      console.warn('[AuthContext] Firestore offline ou timeout:', err)
+      // Monta um perfil mínimo com os dados do Firebase Auth
+      // para não travar o app — sem acesso ao Firestore
+      setAppUser({
+        uid:         user.uid,
+        email:       user.email ?? '',
+        displayName: user.displayName ?? 'Usuário',
+        photoURL:    user.photoURL,
+        role:        'membro',   // role mínimo seguro
+        ministerios: [],
+        phone:       null,
+        active:      true,
+        createdAt:   new Date().toISOString(),
+        updatedAt:   new Date().toISOString(),
+      })
+    }
+  }
+
+  async function refetch() {
+    if (firebaseUser) await fetchProfile(firebaseUser)
+  }
+
   useEffect(() => {
     const unsubscribe = onAuthChange(async (user) => {
       setFirebaseUser(user)
-
       if (user) {
-        const profile = await getUserProfile(user.uid)
-        setAppUser(profile)
+        await fetchProfile(user)
       } else {
         setAppUser(null)
       }
-
       setLoading(false)
     })
-
     return unsubscribe
   }, [])
 
@@ -43,15 +73,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider
-      value={{
-        firebaseUser,
-        appUser,
-        loading,
-        role: appUser?.role ?? null,
-        can,
-      }}
-    >
+    <AuthContext.Provider value={{ firebaseUser, appUser, loading, role: appUser?.role ?? null, can, refetch }}>
       {children}
     </AuthContext.Provider>
   )
