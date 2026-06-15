@@ -157,3 +157,153 @@ button:focus-visible, a:focus-visible {
     animation-duration: 0.01ms !important;
   }
 }
+
+/* ── Admin enterprise design overrides ──────── */
+@layer components {
+  /* Sidebar refinada */
+  .sb-item {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 8px 12px;
+    margin: 1px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    color: #4A3020;
+    background: transparent;
+    border: none;
+    width: calc(100% - 20px);
+    text-align: left;
+    transition: background 0.15s, color 0.15s;
+    min-height: 36px;
+    letter-spacing: -0.1px;
+  }
+  .sb-item:hover {
+    background: rgba(255,255,255,0.03);
+    color: #B09880;
+  }
+  .sb-item.active {
+    background: rgba(196,82,26,0.1);
+    color: #E06A2C;
+    font-weight: 600;
+  }
+  .sb-item.active svg {
+    stroke: #E06A2C;
+  }
+  .sb-item svg {
+    stroke: currentColor;
+    flex-shrink: 0;
+    opacity: 0.7;
+  }
+  .sb-item.active svg { opacity: 1; }
+  .sb-item:hover svg  { opacity: 0.9; }
+
+  /* Cards enterprise */
+  .card {
+    background: #0E0A06;
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 10px;
+    padding: 22px 24px;
+  }
+  .card-hover { transition: border-color 0.2s; }
+  .card-hover:hover { border-color: rgba(196,82,26,0.2); }
+
+  /* KPI card */
+  .kpi-card {
+    background: #0E0A06;
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 10px;
+    padding: 20px 22px;
+    transition: border-color 0.2s;
+  }
+  .kpi-card:hover { border-color: rgba(196,82,26,0.15); }
+
+  /* Table refinada */
+  .table-row { border-bottom: 1px solid rgba(255,255,255,0.04); transition: background 0.12s; }
+  .table-row:hover { background: rgba(255,255,255,0.02); }
+
+  /* Page header */
+  .page-title {
+    font-weight: 800;
+    font-size: clamp(20px, 2.5vw, 26px);
+    color: #FAF6F2;
+    letter-spacing: -0.8px;
+    line-height: 1.1;
+  }
+  .page-sub { font-size: 13px; color: #4A3020; margin-top: 4px; letter-spacing: 0.1px; }
+
+  /* Inputs enterprise */
+  .field {
+    width: 100%;
+    background: #0A0704;
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 7px;
+    padding: 10px 14px;
+    color: #FAF6F2;
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    min-height: 42px;
+    letter-spacing: -0.1px;
+  }
+  .field::placeholder { color: #3D2410; }
+  .field:focus {
+    border-color: rgba(196,82,26,0.5);
+    box-shadow: 0 0 0 3px rgba(196,82,26,0.08);
+  }
+  select.field option { background: #130B07; color: #FAF6F2; }
+
+  /* Botões enterprise */
+  .btn-primary {
+    background: #C4521A;
+    color: #FAF6F2;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    border: none;
+    cursor: pointer;
+    border-radius: 7px;
+    transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
+    min-height: 38px;
+    padding: 9px 20px;
+    font-size: 13px;
+    letter-spacing: -0.1px;
+  }
+  .btn-primary:hover {
+    background: #D45F22;
+    box-shadow: 0 0 0 3px rgba(196,82,26,0.2);
+  }
+  .btn-primary:active { transform: scale(0.98); }
+  .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+  .btn-ghost {
+    background: transparent;
+    color: #6A4D35;
+    font-weight: 500;
+    font-family: 'Inter', sans-serif;
+    border: 1px solid rgba(255,255,255,0.07);
+    cursor: pointer;
+    border-radius: 7px;
+    transition: color 0.2s, border-color 0.2s, background 0.2s;
+    min-height: 38px;
+    padding: 9px 18px;
+    font-size: 13px;
+    letter-spacing: -0.1px;
+  }
+  .btn-ghost:hover { color: #FAF6F2; border-color: rgba(255,255,255,0.15); background: rgba(255,255,255,0.03); }
+
+  /* Badges refinadas */
+  .badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 10px; font-weight: 600; padding: 3px 8px;
+    border-radius: 4px; letter-spacing: 0.4px; text-transform: uppercase;
+  }
+  .badge-orange { background: rgba(196,82,26,0.12); color: #E06A2C; }
+  .badge-green  { background: rgba(45,106,79,0.18);  color: #52B788; }
+  .badge-red    { background: rgba(181,72,90,0.15);  color: #E07A8A; }
+  .badge-gray   { background: rgba(106,77,53,0.2);   color: #7A5A42; }
+  .badge-gold   { background: rgba(212,168,75,0.12); color: #D4A84B; }
+  .badge-blue   { background: rgba(91,158,201,0.12); color: #5B9EC9; }
+}
