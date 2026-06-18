@@ -12,6 +12,10 @@ service cloud.firestore {
 
     // ═══ Helpers ═══════════════════════════════
 
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
     // Pega o documento do usuário autenticado
     function getUserData() {
       return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
@@ -22,59 +26,62 @@ service cloud.firestore {
       return isSignedIn() ? getUserData().role : 'visitante';
     }
 
-    function isSignedIn() {
-      return request.auth != null;
-    }
-
     function isOwner(uid) {
       return isSignedIn() && request.auth.uid == uid;
     }
 
-    // Hierarquia: retorna true se o role do usuário é >= ao role mínimo exigido
-    function isAtLeast(minRole) {
-      let order = ['visitante','membro','lider','pastor','super_admin'];
-      return isSignedIn() &&
-        order.indexOf(myRole()) >= order.indexOf(minRole);
+    // ── Hierarquia sem indexOf() ──────────────
+    // O Firestore Rules não tem .indexOf() em listas,
+    // então comparamos role por role usando OR direto.
+    function isMembroOrAbove() {
+      let r = myRole();
+      return r == 'membro' || r == 'lider' || r == 'pastor' || r == 'super_admin';
     }
 
-    function isPastorOrAbove()      { return isAtLeast('pastor'); }
-    function isLiderOrAbove()       { return isAtLeast('lider'); }
-    function isMembroOrAbove()      { return isAtLeast('membro'); }
-    function isSuperAdmin()         { return myRole() == 'super_admin'; }
+    function isLiderOrAbove() {
+      let r = myRole();
+      return r == 'lider' || r == 'pastor' || r == 'super_admin';
+    }
+
+    function isPastorOrAbove() {
+      let r = myRole();
+      return r == 'pastor' || r == 'super_admin';
+    }
+
+    function isSuperAdmin() {
+      return myRole() == 'super_admin';
+    }
 
     // ═══ users ═════════════════════════════════
-    // Qualquer pessoa logada pode LER (necessário para listas de membros etc)
-    // Só o próprio usuário pode editar seu perfil básico
-    // Só pastor/super_admin podem mudar ROLE de qualquer um
     match /users/{userId} {
       allow read: if isSignedIn();
 
       // Criação do próprio documento no primeiro login
       allow create: if isOwner(userId)
-        && request.resource.data.role == 'membro'; // sempre nasce como membro
+        && request.resource.data.role == 'membro';
 
-      // Update: o próprio usuário pode editar campos pessoais,
+      // O próprio usuário pode editar campos pessoais,
       // MAS não pode alterar seu próprio "role" ou "active"
       allow update: if isOwner(userId)
         && request.resource.data.role == resource.data.role
         && request.resource.data.active == resource.data.active;
 
       // Pastor/super_admin podem alterar qualquer campo de qualquer usuário,
-      // incluindo role e active — exceto a própria conta (proteção extra)
+      // exceto a própria conta (proteção extra)
       allow update: if isPastorOrAbove() && userId != request.auth.uid;
 
-      // Só super_admin pode deletar contas
+      // Só super_admin pode deletar contas (e não a própria)
       allow delete: if isSuperAdmin() && userId != request.auth.uid;
     }
 
-    // ═══ members (cadastro de membros da igreja) ═
+    // ═══ members ════════════════════════════════
     match /members/{memberId} {
       allow read: if isSignedIn();
       allow create, update: if isLiderOrAbove();
       allow delete: if isPastorOrAbove();
     }
 
-    // ═══ ministerios ═══════════════════════════
+    // ═══ ministerios ════════════════════════════
     match /ministerios/{minId} {
       allow read: if isSignedIn();
       allow create, update, delete: if isLiderOrAbove();
@@ -89,39 +96,34 @@ service cloud.firestore {
 
     // ═══ eventos ════════════════════════════════
     match /eventos/{eventoId} {
-      allow read: if true; // landing page pública precisa ler eventos publicados
+      allow read: if true; // landing page pública lê eventos
       allow create, update: if isLiderOrAbove();
       allow delete: if isPastorOrAbove();
     }
 
-    // ═══ prayers (pedidos de oração) ═══════════
+    // ═══ prayers ════════════════════════════════
     match /prayers/{prayerId} {
       allow read: if isSignedIn();
-      // Qualquer membro logado pode criar um pedido
       allow create: if isMembroOrAbove()
         && request.resource.data.authorUid == request.auth.uid;
-      // Qualquer membro pode "orar" (incrementar prayerCount) ou
-      // líder+ pode marcar como respondido
       allow update: if isMembroOrAbove();
       allow delete: if isLiderOrAbove();
     }
 
-    // ═══ posts (comunicados) ════════════════════
+    // ═══ posts ══════════════════════════════════
     match /posts/{postId} {
-      // Pública para ler posts publicados (landing page / feed)
-      allow read: if true;
+      allow read: if true; // landing page lê posts publicados
       allow create, update: if isLiderOrAbove();
       allow delete: if isPastorOrAbove();
     }
 
-    // ═══ live (configuração de transmissão) ════
+    // ═══ live ═══════════════════════════════════
     match /live/{liveId} {
       allow read: if true;
       allow write: if isPastorOrAbove();
     }
 
     // ═══ Bloqueio padrão ════════════════════════
-    // Qualquer coleção não mapeada acima é bloqueada por padrão
     match /{document=**} {
       allow read, write: if false;
     }
