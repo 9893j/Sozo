@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { C, GRAIN } from '@/lib/tokens'
 import { FadeIn, Tag, H2, SozoLogo, BtnPrimary, BtnGhost } from '@/components/ui'
+import { LiveBanner } from '@/components/ui/LiveBanner'
 
 // ─── Dados ────────────────────────────────────
 const CYCLE = [

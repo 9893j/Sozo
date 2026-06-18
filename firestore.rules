@@ -1,18 +1,129 @@
-rules_version='2'
+rules_version = '2';
+
+// ─────────────────────────────────────────────
+//  SOZO COMUNIDADE CRISTÃ — Regras de Produção
+// ─────────────────────────────────────────────
+//  Hierarquia de roles (do menor para o maior):
+//  visitante < membro < lider < pastor < super_admin
+// ─────────────────────────────────────────────
 
 service cloud.firestore {
   match /databases/{database}/documents {
+
+    // ═══ Helpers ═══════════════════════════════
+
+    // Pega o documento do usuário autenticado
+    function getUserData() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+
+    // Pega o role do usuário autenticado (ou 'visitante' se não logado)
+    function myRole() {
+      return isSignedIn() ? getUserData().role : 'visitante';
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+    // Hierarquia: retorna true se o role do usuário é >= ao role mínimo exigido
+    function isAtLeast(minRole) {
+      let order = ['visitante','membro','lider','pastor','super_admin'];
+      return isSignedIn() &&
+        order.indexOf(myRole()) >= order.indexOf(minRole);
+    }
+
+    function isPastorOrAbove()      { return isAtLeast('pastor'); }
+    function isLiderOrAbove()       { return isAtLeast('lider'); }
+    function isMembroOrAbove()      { return isAtLeast('membro'); }
+    function isSuperAdmin()         { return myRole() == 'super_admin'; }
+
+    // ═══ users ═════════════════════════════════
+    // Qualquer pessoa logada pode LER (necessário para listas de membros etc)
+    // Só o próprio usuário pode editar seu perfil básico
+    // Só pastor/super_admin podem mudar ROLE de qualquer um
+    match /users/{userId} {
+      allow read: if isSignedIn();
+
+      // Criação do próprio documento no primeiro login
+      allow create: if isOwner(userId)
+        && request.resource.data.role == 'membro'; // sempre nasce como membro
+
+      // Update: o próprio usuário pode editar campos pessoais,
+      // MAS não pode alterar seu próprio "role" ou "active"
+      allow update: if isOwner(userId)
+        && request.resource.data.role == resource.data.role
+        && request.resource.data.active == resource.data.active;
+
+      // Pastor/super_admin podem alterar qualquer campo de qualquer usuário,
+      // incluindo role e active — exceto a própria conta (proteção extra)
+      allow update: if isPastorOrAbove() && userId != request.auth.uid;
+
+      // Só super_admin pode deletar contas
+      allow delete: if isSuperAdmin() && userId != request.auth.uid;
+    }
+
+    // ═══ members (cadastro de membros da igreja) ═
+    match /members/{memberId} {
+      allow read: if isSignedIn();
+      allow create, update: if isLiderOrAbove();
+      allow delete: if isPastorOrAbove();
+    }
+
+    // ═══ ministerios ═══════════════════════════
+    match /ministerios/{minId} {
+      allow read: if isSignedIn();
+      allow create, update, delete: if isLiderOrAbove();
+    }
+
+    // ═══ escalas ════════════════════════════════
+    match /escalas/{escalaId} {
+      allow read: if isSignedIn();
+      allow create, update: if isLiderOrAbove();
+      allow delete: if isPastorOrAbove();
+    }
+
+    // ═══ eventos ════════════════════════════════
+    match /eventos/{eventoId} {
+      allow read: if true; // landing page pública precisa ler eventos publicados
+      allow create, update: if isLiderOrAbove();
+      allow delete: if isPastorOrAbove();
+    }
+
+    // ═══ prayers (pedidos de oração) ═══════════
+    match /prayers/{prayerId} {
+      allow read: if isSignedIn();
+      // Qualquer membro logado pode criar um pedido
+      allow create: if isMembroOrAbove()
+        && request.resource.data.authorUid == request.auth.uid;
+      // Qualquer membro pode "orar" (incrementar prayerCount) ou
+      // líder+ pode marcar como respondido
+      allow update: if isMembroOrAbove();
+      allow delete: if isLiderOrAbove();
+    }
+
+    // ═══ posts (comunicados) ════════════════════
+    match /posts/{postId} {
+      // Pública para ler posts publicados (landing page / feed)
+      allow read: if true;
+      allow create, update: if isLiderOrAbove();
+      allow delete: if isPastorOrAbove();
+    }
+
+    // ═══ live (configuração de transmissão) ════
+    match /live/{liveId} {
+      allow read: if true;
+      allow write: if isPastorOrAbove();
+    }
+
+    // ═══ Bloqueio padrão ════════════════════════
+    // Qualquer coleção não mapeada acima é bloqueada por padrão
     match /{document=**} {
-      // This rule allows anyone with your database reference to view, edit,
-      // and delete all data in your database. It is useful for getting
-      // started, but it is configured to expire after 30 days because it
-      // leaves your app open to attackers. At that time, all client
-      // requests to your database will be denied.
-      //
-      // Make sure to write security rules for your app before that time, or
-      // else all client requests to your database will be denied until you
-      // update your rules.
-      allow read, write: if request.time < timestamp.date(2026, 7, 9);
+      allow read, write: if false;
     }
   }
 }
