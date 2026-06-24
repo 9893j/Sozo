@@ -88,8 +88,8 @@ em **Settings → Environment Variables**.
 
 | Sprint | Foco                                      | Status        |
 |--------|-------------------------------------------|---------------|
-| 1      | Landing Page + Auth + Layout do admin     | 🔨 Em progresso |
-| 2      | Gestão de Usuários + Roles                | ⏳ A fazer     |
-| 3      | Membros, Escalas, Eventos, Ministérios    | ⏳ A fazer     |
-| 4      | Oração, Comunicados, Transmissão, Perfil  | ⏳ A fazer     |
+| 1      | Landing Page + Auth + Layout do admin     | 🔨 Ajustes |
+| 2      | Gestão de Usuários + Roles                | ⏳ Em progresso |
+| 3      | Membros, Escalas, Eventos, Ministérios    | ⏳ Em progresso |
+| 4      | Oração, Comunicados, Transmissão, Perfil  | ⏳ Em progresso |
 # Sozo
