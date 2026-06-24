@@ -1,5 +1,8 @@
 // Ícones SVG minimalistas — traço único, 1.5px stroke, estilo enterprise
 // Uso: <Icon name="users" size={16} color="currentColor" />
+import {
+  X, Check, ArrowRight, ArrowLeft, CalendarDays, ThumbsUp, Heart, HandHelping,
+} from 'lucide-react'
 
 interface IconProps { size?: number; color?: string; style?: React.CSSProperties }
 
@@ -58,4 +61,15 @@ export const Icons = {
   invite:       (p: IconProps) => <Icon {...p} d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" d2="M12 3a4 4 0 1 0 0 8 4 4 0 0 0 0-8zM19 8v6M22 11h-6" />,
   activity:     (p: IconProps) => <Icon {...p} d="M22 12h-4l-3 9L9 3l-3 9H2" />,
   layers:       (p: IconProps) => <Icon {...p} d="M12 2L2 7l10 5 10-5-10-5z" d2="M2 17l10 5 10-5M2 12l10 5 10-5" />,
+
+  // UI — close / confirmação / navegação (lucide-react)
+  close:        ({ size = 16, color = 'currentColor', style }: IconProps) => <X size={size} color={color} style={style} strokeWidth={1.75} />,
+  checkCircle:  ({ size = 16, color = 'currentColor', style }: IconProps) => <Check size={size} color={color} style={style} strokeWidth={2} />,
+  arrowRight:   ({ size = 16, color = 'currentColor', style }: IconProps) => <ArrowRight size={size} color={color} style={style} strokeWidth={1.75} />,
+  arrowLeftSm:  ({ size = 16, color = 'currentColor', style }: IconProps) => <ArrowLeft size={size} color={color} style={style} strokeWidth={1.75} />,
+  calendarDays: ({ size = 16, color = 'currentColor', style }: IconProps) => <CalendarDays size={size} color={color} style={style} strokeWidth={1.5} />,
+  thumbsUp:     ({ size = 16, color = 'currentColor', style }: IconProps) => <ThumbsUp size={size} color={color} style={style} strokeWidth={1.75} />,
+  heartFilled:  ({ size = 16, color = 'currentColor', style }: IconProps) => <Heart size={size} color={color} fill={color} style={style} strokeWidth={1.75} />,
+  heartLine:    ({ size = 16, color = 'currentColor', style }: IconProps) => <Heart size={size} color={color} style={style} strokeWidth={1.75} />,
+  prayingHands: ({ size = 16, color = 'currentColor', style }: IconProps) => <HandHelping size={size} color={color} style={style} strokeWidth={1.5} />,
 }

@@ -1,6 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom'
 import { PrivateRoute, RoleGuard } from '@/features/auth/PrivateRoute'
 import { C } from '@/lib/tokens'
+import { Icons } from '@/components/ui/icons'
 
 // ── Layouts ────────────────────────────────────
 import PublicLayout  from '@/components/layout/PublicLayout'
@@ -27,7 +28,7 @@ const Page404 = () => (
     <div style={{ textAlign: 'center' }}>
       <div style={{ fontWeight: 900, fontSize: 96, color: C.primary, letterSpacing: '-4px', lineHeight: 1 }}>404</div>
       <div style={{ fontSize: 16, color: C.gray2, marginTop: 12 }}>Página não encontrada</div>
-      <a href="/" style={{ display: 'inline-block', marginTop: 24, color: C.primary, fontSize: 14, fontWeight: 600 }}>← Voltar ao início</a>
+      <a href="/" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, marginTop: 24, color: C.primary, fontSize: 14, fontWeight: 600 }}><Icons.arrowLeftSm size={14} /> Voltar ao início</a>
     </div>
   </div>
 )

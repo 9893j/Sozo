@@ -3,14 +3,16 @@ import { addDoc, updateDoc, deleteDoc, doc, collection, serverTimestamp, getDocs
 import { db } from '@/firebase/config'
 import { useAuth } from '@/features/auth/AuthContext'
 import { C } from '@/lib/tokens'
+import { Icons } from '@/components/ui/icons'
+import { BookOpen, CalendarDays, HandHelping, Megaphone, Sparkle, Save, ArrowDown, ArrowUp } from 'lucide-react'
 import type { Post, PostCategory } from '@/types'
 
-const CATS: { key: PostCategory; label: string; color: string; emoji: string }[] = [
-  { key:'palavra',     label:'Palavra',     color:'#C4521A', emoji:'📖' },
-  { key:'eventos',     label:'Eventos',     color:'#D4A84B', emoji:'📅' },
-  { key:'oracao',      label:'Oração',      color:'#5B9EC9', emoji:'🙏' },
-  { key:'aviso',       label:'Aviso',       color:'#E07A8A', emoji:'📢' },
-  { key:'testemunho',  label:'Testemunho',  color:'#52B788', emoji:'✦' },
+const CATS: { key: PostCategory; label: string; color: string; Icon: typeof BookOpen }[] = [
+  { key:'palavra',     label:'Palavra',     color:'#C4521A', Icon:BookOpen },
+  { key:'eventos',     label:'Eventos',     color:'#D4A84B', Icon:CalendarDays },
+  { key:'oracao',      label:'Oração',      color:'#5B9EC9', Icon:HandHelping },
+  { key:'aviso',       label:'Aviso',       color:'#E07A8A', Icon:Megaphone },
+  { key:'testemunho',  label:'Testemunho',  color:'#52B788', Icon:Sparkle },
 ]
 const CAT_MAP = Object.fromEntries(CATS.map(c => [c.key, c]))
 
@@ -38,7 +40,9 @@ function PostModal({ post, onClose, onSave }: { post: Post | null; onClose: () =
     <div onClick={onClose} style={{ position:'fixed', inset:0, zIndex:200, background:'rgba(0,0,0,0.75)', backdropFilter:'blur(12px)', display:'flex', alignItems:'center', justifyContent:'center', padding:20 }}>
       <div onClick={e => e.stopPropagation()} style={{ background:C.bg2, border:`1px solid ${C.lineHi}`, borderRadius:10, padding:'36px 32px', maxWidth:580, width:'100%', position:'relative', fontFamily:'"Inter",system-ui,sans-serif', maxHeight:'92vh', overflowY:'auto' }}>
         <div style={{ position:'absolute', top:0, left:0, right:0, height:2, background:`linear-gradient(90deg,transparent,${C.primary},transparent)`, borderRadius:'10px 10px 0 0' }} />
-        <button onClick={onClose} style={{ position:'absolute', top:14, right:14, background:'none', border:'none', color:C.gray2, fontSize:20, cursor:'pointer' }}>✕</button>
+        <button onClick={onClose} style={{ position:'absolute', top:14, right:14, background:'none', border:'none', color:C.gray2, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', width:32, height:32 }}>
+          <Icons.close size={18} />
+        </button>
         <div style={{ fontSize:11, fontWeight:700, letterSpacing:'3px', textTransform:'uppercase', color:C.primary, marginBottom:6 }}>{post ? 'Editar' : 'Novo'} Comunicado</div>
         <h3 style={{ fontWeight:900, fontSize:22, color:C.white, marginBottom:24 }}>{post ? post.title : 'Criar comunicado'}</h3>
         <form onSubmit={submit} style={{ display:'flex', flexDirection:'column', gap:14 }}>
@@ -46,8 +50,8 @@ function PostModal({ post, onClose, onSave }: { post: Post | null; onClose: () =
             <label style={{ fontSize:11, fontWeight:700, letterSpacing:'2px', textTransform:'uppercase', color:C.gray3, display:'block', marginBottom:8 }}>Categoria</label>
             <div style={{ display:'flex', gap:8, flexWrap:'wrap' }}>
               {CATS.map(c => (
-                <button key={c.key} type="button" onClick={() => set('category', c.key)} style={{ padding:'7px 14px', borderRadius:5, border:`1px solid ${form.category===c.key ? c.color : C.line}`, background: form.category===c.key ? `${c.color}18` : C.bg3, color: form.category===c.key ? c.color : C.gray2, fontSize:13, fontWeight:600, cursor:'pointer', fontFamily:'"Inter",system-ui,sans-serif', transition:'all 0.15s' }}>
-                  {c.emoji} {c.label}
+                <button key={c.key} type="button" onClick={() => set('category', c.key)} style={{ padding:'7px 14px', borderRadius:5, border:`1px solid ${form.category===c.key ? c.color : C.line}`, background: form.category===c.key ? `${c.color}18` : C.bg3, color: form.category===c.key ? c.color : C.gray2, fontSize:13, fontWeight:600, cursor:'pointer', fontFamily:'"Inter",system-ui,sans-serif', transition:'all 0.15s', display:'inline-flex', alignItems:'center', gap:6 }}>
+                  <c.Icon size={14} strokeWidth={1.75} /> {c.label}
                 </button>
               ))}
             </div>
@@ -62,11 +66,11 @@ function PostModal({ post, onClose, onSave }: { post: Post | null; onClose: () =
           </div>
           <div style={{ display:'flex', gap:10 }}>
             {[
-              { val:false, label:'💾 Rascunho' },
-              { val:true,  label:'📢 Publicar agora' },
+              { val:false, label:'Rascunho', Icon:Save },
+              { val:true,  label:'Publicar agora', Icon:Megaphone },
             ].map(opt => (
-              <button key={String(opt.val)} type="button" onClick={() => set('published', opt.val)} style={{ flex:1, padding:'10px', borderRadius:6, cursor:'pointer', fontFamily:'"Inter",system-ui,sans-serif', fontWeight:700, fontSize:14, border:`1px solid ${form.published===opt.val ? C.primary : C.line}`, background: form.published===opt.val ? 'rgba(196,82,26,0.1)' : C.bg3, color: form.published===opt.val ? C.primaryL : C.gray2, transition:'all 0.15s' }}>
-                {opt.label}
+              <button key={String(opt.val)} type="button" onClick={() => set('published', opt.val)} style={{ flex:1, padding:'10px', borderRadius:6, cursor:'pointer', fontFamily:'"Inter",system-ui,sans-serif', fontWeight:700, fontSize:14, border:`1px solid ${form.published===opt.val ? C.primary : C.line}`, background: form.published===opt.val ? 'rgba(196,82,26,0.1)' : C.bg3, color: form.published===opt.val ? C.primaryL : C.gray2, transition:'all 0.15s', display:'flex', alignItems:'center', justifyContent:'center', gap:7 }}>
+                <opt.Icon size={15} strokeWidth={1.75} /> {opt.label}
               </button>
             ))}
           </div>
@@ -137,7 +141,7 @@ export default function PostsPage() {
           <p className="page-sub">{publicados} publicados · {rascunhos} rascunhos</p>
         </div>
         <button onClick={() => setEditing('new')} className="btn-primary" style={{ fontSize:14, padding:'10px 20px', display:'flex', alignItems:'center', gap:8 }}>
-          <span style={{ fontSize:18 }}>+</span> Novo comunicado
+          <Icons.plus size={16} /> Novo comunicado
         </button>
       </div>
 
@@ -157,11 +161,14 @@ export default function PostsPage() {
 
       {/* Filtros */}
       <div style={{ display:'flex', gap:8, marginBottom:20, flexWrap:'wrap', alignItems:'center' }}>
-        <input className="field" placeholder="🔍 Buscar comunicado..." value={search} onChange={e => setSearch(e.target.value)} style={{ maxWidth:240 }} />
+        <div style={{ position:'relative', maxWidth:240 }}>
+          <Icons.search size={15} style={{ position:'absolute', left:12, top:'50%', transform:'translateY(-50%)', color:C.gray3, pointerEvents:'none' }} />
+          <input className="field" placeholder="Buscar comunicado..." value={search} onChange={e => setSearch(e.target.value)} style={{ paddingLeft:36, width:'100%' }} />
+        </div>
         <button onClick={() => setFilter('todos')} style={{ padding:'7px 16px', borderRadius:5, border:`1px solid ${filterCat==='todos' ? C.primary : C.lineHi}`, background: filterCat==='todos' ? 'rgba(196,82,26,0.1)' : 'none', color: filterCat==='todos' ? C.primaryL : C.gray2, fontSize:13, fontWeight:600, cursor:'pointer', fontFamily:'"Inter",system-ui,sans-serif', minHeight:44 }}>Todos</button>
         {CATS.map(c => (
-          <button key={c.key} onClick={() => setFilter(c.key)} style={{ padding:'7px 14px', borderRadius:5, border:`1px solid ${filterCat===c.key ? c.color : C.lineHi}`, background: filterCat===c.key ? `${c.color}18` : 'none', color: filterCat===c.key ? c.color : C.gray2, fontSize:13, fontWeight:600, cursor:'pointer', fontFamily:'"Inter",system-ui,sans-serif', minHeight:44 }}>
-            {c.emoji} {c.label}
+          <button key={c.key} onClick={() => setFilter(c.key)} style={{ padding:'7px 14px', borderRadius:5, border:`1px solid ${filterCat===c.key ? c.color : C.lineHi}`, background: filterCat===c.key ? `${c.color}18` : 'none', color: filterCat===c.key ? c.color : C.gray2, fontSize:13, fontWeight:600, cursor:'pointer', fontFamily:'"Inter",system-ui,sans-serif', minHeight:44, display:'inline-flex', alignItems:'center', gap:6 }}>
+            <c.Icon size={14} strokeWidth={1.75} /> {c.label}
           </button>
         ))}
       </div>
@@ -171,10 +178,10 @@ export default function PostsPage() {
         <div className="card" style={{ padding:48, textAlign:'center' }}><div className="spinner" style={{ margin:'0 auto' }} /></div>
       ) : filtered.length === 0 ? (
         <div className="card" style={{ padding:'48px 24px', textAlign:'center' }}>
-          <div style={{ fontSize:36, marginBottom:10 }}>📢</div>
+          <div style={{ display:'flex', justifyContent:'center', marginBottom:10, color:C.gray3 }}><Megaphone size={36} strokeWidth={1.5} /></div>
           <div style={{ fontSize:15, color:C.white, fontWeight:700, marginBottom:6 }}>Nenhum comunicado</div>
           <p style={{ fontSize:13, color:C.gray3, marginBottom:16 }}>Crie o primeiro comunicado da comunidade Sozo.</p>
-          <button onClick={() => setEditing('new')} className="btn-primary" style={{ fontSize:14, padding:'11px 24px' }}>+ Criar comunicado</button>
+          <button onClick={() => setEditing('new')} className="btn-primary" style={{ fontSize:14, padding:'11px 24px', display:'inline-flex', alignItems:'center', gap:8 }}><Icons.plus size={15} /> Criar comunicado</button>
         </div>
       ) : (
         <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
@@ -182,7 +189,9 @@ export default function PostsPage() {
             const cat = CAT_MAP[post.category]
             return (
               <div key={post.id} style={{ background:C.bg2, border:`1px solid ${post.published ? C.lineHi : C.line}`, borderRadius:8, padding:'20px', display:'flex', gap:16, transition:'border-color 0.2s' }}>
-                <div style={{ width:44, height:44, borderRadius:8, background:`${cat.color}18`, border:`1px solid ${cat.color}33`, display:'flex', alignItems:'center', justifyContent:'center', fontSize:20, flexShrink:0 }}>{cat.emoji}</div>
+                <div style={{ width:44, height:44, borderRadius:8, background:`${cat.color}18`, border:`1px solid ${cat.color}33`, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, color:cat.color }}>
+                  <cat.Icon size={20} strokeWidth={1.75} />
+                </div>
                 <div style={{ flex:1, minWidth:0 }}>
                   <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:6, flexWrap:'wrap' }}>
                     <span style={{ fontWeight:800, fontSize:15, color:C.white }}>{post.title}</span>
@@ -193,17 +202,17 @@ export default function PostsPage() {
                   </div>
                   <p style={{ fontSize:14, color:C.gray2, lineHeight:1.7, marginBottom:12 }}>{post.body.slice(0,160)}{post.body.length>160 ? '...' : ''}</p>
                   <div style={{ display:'flex', gap:8 }}>
-                    <button onClick={() => togglePublish(post)} style={{ padding:'6px 14px', borderRadius:5, border:`1px solid ${post.published ? 'rgba(212,168,75,0.3)' : 'rgba(82,183,136,0.3)'}`, background:'none', color: post.published ? '#D4A84B' : '#52B788', fontSize:13, fontWeight:600, cursor:'pointer', fontFamily:'"Inter",system-ui,sans-serif' }}>
-                      {post.published ? '↓ Despublicar' : '↑ Publicar'}
+                    <button onClick={() => togglePublish(post)} style={{ padding:'6px 14px', borderRadius:5, border:`1px solid ${post.published ? 'rgba(212,168,75,0.3)' : 'rgba(82,183,136,0.3)'}`, background:'none', color: post.published ? '#D4A84B' : '#52B788', fontSize:13, fontWeight:600, cursor:'pointer', fontFamily:'"Inter",system-ui,sans-serif', display:'inline-flex', alignItems:'center', gap:6 }}>
+                      {post.published ? <ArrowDown size={13} strokeWidth={2} /> : <ArrowUp size={13} strokeWidth={2} />} {post.published ? 'Despublicar' : 'Publicar'}
                     </button>
                     <button onClick={() => setEditing(post)} style={{ padding:'6px 14px', borderRadius:5, border:`1px solid ${C.lineHi}`, background:'none', color:C.gray2, fontSize:13, fontWeight:600, cursor:'pointer', fontFamily:'"Inter",system-ui,sans-serif', transition:'all 0.15s' }}
                       onMouseEnter={e => { e.currentTarget.style.borderColor=C.primary; e.currentTarget.style.color=C.primaryL }}
                       onMouseLeave={e => { e.currentTarget.style.borderColor=C.lineHi; e.currentTarget.style.color=C.gray2 }}
                     >Editar</button>
-                    <button onClick={() => handleDelete(post.id)} style={{ width:32, height:32, background:'none', border:`1px solid ${C.line}`, borderRadius:5, color:C.gray3, fontSize:15, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', transition:'all 0.15s' }}
+                    <button onClick={() => handleDelete(post.id)} style={{ width:32, height:32, background:'none', border:`1px solid ${C.line}`, borderRadius:5, color:C.gray3, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', transition:'all 0.15s' }}
                       onMouseEnter={e => { e.currentTarget.style.borderColor='rgba(181,72,90,0.4)'; e.currentTarget.style.color='#E07A8A' }}
                       onMouseLeave={e => { e.currentTarget.style.borderColor=C.line; e.currentTarget.style.color=C.gray3 }}
-                    >🗑</button>
+                    ><Icons.trash size={15} /></button>
                   </div>
                 </div>
               </div>

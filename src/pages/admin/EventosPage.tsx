@@ -3,6 +3,9 @@ import { addDoc, updateDoc, deleteDoc, doc, collection, serverTimestamp, getDocs
 import { db } from '@/firebase/config'
 import { useAuth } from '@/features/auth/AuthContext'
 import { C } from '@/lib/tokens'
+import { Icons } from '@/components/ui/icons'
+import { EVENT_ICONS, getIconByKey, resolveIconKey } from '@/lib/iconCatalog'
+import { ArrowUp, MapPin } from 'lucide-react'
 import type { Evento } from '@/types'
 
 // ─── Tipos ───────────────────────────────────
@@ -12,14 +15,12 @@ const STATUS_BADGE = {
   encerrado: { bg:'rgba(91,158,201,0.15)', color:'#5B9EC9', label:'Encerrado' },
 }
 
-const EMOJIS = ['✝','🔥','🕊','❤️','🎵','👑','💧','🎉','🙏','⛪','📖','🌙','⭐','🏕']
-
 interface EventoForm {
   title: string; description: string; date: string; time: string
-  local: string; emoji: string; maxInscritos: string
+  local: string; iconKey: string; maxInscritos: string
   status: Evento['status']
 }
-const EMPTY_FORM: EventoForm = { title:'', description:'', date:'', time:'19h00', local:'', emoji:'✝', maxInscritos:'', status:'rascunho' }
+const EMPTY_FORM: EventoForm = { title:'', description:'', date:'', time:'19h00', local:'', iconKey:'cross', maxInscritos:'', status:'rascunho' }
 
 // ─── Modal form ───────────────────────────────
 interface ModalProps { evento: Evento | null; onClose: () => void; onSave: (form: EventoForm, id?: string) => Promise<void> }
@@ -27,7 +28,7 @@ interface ModalProps { evento: Evento | null; onClose: () => void; onSave: (form
 function EventoModal({ evento, onClose, onSave }: ModalProps) {
   const [form, setForm]     = useState<EventoForm>(evento ? {
     title: evento.title, description: evento.description, date: evento.date,
-    time: evento.time, local: evento.local, emoji: evento.emoji,
+    time: evento.time, local: evento.local, iconKey: resolveIconKey(evento),
     maxInscritos: evento.maxInscritos?.toString() ?? '',
     status: evento.status,
   } : EMPTY_FORM)
@@ -53,7 +54,9 @@ function EventoModal({ evento, onClose, onSave }: ModalProps) {
     <div onClick={onClose} style={{ position:'fixed', inset:0, zIndex:200, background:'rgba(0,0,0,0.75)', backdropFilter:'blur(12px)', display:'flex', alignItems:'center', justifyContent:'center', padding:20 }}>
       <div onClick={e => e.stopPropagation()} style={{ background:C.bg2, border:`1px solid ${C.lineHi}`, borderRadius:10, padding:'36px 32px', maxWidth:560, width:'100%', position:'relative', fontFamily:'"Inter",system-ui,sans-serif', maxHeight:'90vh', overflowY:'auto' }}>
         <div style={{ position:'absolute', top:0, left:0, right:0, height:2, background:`linear-gradient(90deg,transparent,${C.primary},transparent)`, borderRadius:'10px 10px 0 0' }} />
-        <button onClick={onClose} style={{ position:'absolute', top:14, right:14, background:'none', border:'none', color:C.gray2, fontSize:20, cursor:'pointer' }}>✕</button>
+        <button onClick={onClose} style={{ position:'absolute', top:14, right:14, background:'none', border:'none', color:C.gray2, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', width:32, height:32 }}>
+          <Icons.close size={18} />
+        </button>
 
         <div style={{ fontSize:11, fontWeight:700, letterSpacing:'3px', textTransform:'uppercase', color:C.primary, marginBottom:6 }}>{evento ? 'Editar evento' : 'Novo evento'}</div>
         <h3 style={{ fontWeight:900, fontSize:22, color:C.white, letterSpacing:'-0.5px', marginBottom:24 }}>
@@ -62,13 +65,13 @@ function EventoModal({ evento, onClose, onSave }: ModalProps) {
 
         <form onSubmit={handleSubmit} style={{ display:'flex', flexDirection:'column', gap:14 }}>
 
-          {/* Emoji picker */}
+          {/* Seletor de ícone */}
           <div>
             <label style={{ fontSize:11, fontWeight:700, letterSpacing:'2px', textTransform:'uppercase', color:C.gray3, display:'block', marginBottom:10 }}>Ícone</label>
             <div style={{ display:'flex', gap:8, flexWrap:'wrap' }}>
-              {EMOJIS.map(em => (
-                <button key={em} type="button" onClick={() => set('emoji', em)} style={{ width:40, height:40, borderRadius:8, border:`2px solid ${form.emoji===em ? C.primary : C.line}`, background: form.emoji===em ? 'rgba(196,82,26,0.15)' : C.bg3, fontSize:20, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', transition:'all 0.15s' }}>
-                  {em}
+              {EVENT_ICONS.map(({ key, Icon }) => (
+                <button key={key} type="button" onClick={() => set('iconKey', key)} style={{ width:40, height:40, borderRadius:8, border:`2px solid ${form.iconKey===key ? C.primary : C.line}`, background: form.iconKey===key ? 'rgba(196,82,26,0.15)' : C.bg3, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', transition:'all 0.15s', color: form.iconKey===key ? C.primaryL : C.gray2 }}>
+                  <Icon size={19} strokeWidth={1.75} />
                 </button>
               ))}
             </div>
@@ -145,6 +148,7 @@ interface CardProps { evento: Evento; onEdit: () => void; onDelete: () => void; 
 function EventoCard({ evento, onEdit, onDelete, onPublish }: CardProps) {
   const badge = STATUS_BADGE[evento.status]
   const pct   = evento.maxInscritos ? Math.min(100, Math.round(evento.inscritos / evento.maxInscritos * 100)) : null
+  const EventIcon = getIconByKey(resolveIconKey(evento))
 
   function formatDate(d: string) {
     if (!d) return ''
@@ -155,8 +159,8 @@ function EventoCard({ evento, onEdit, onDelete, onPublish }: CardProps) {
   return (
     <div style={{ background:C.bg2, border:`1px solid ${evento.status==='publicado' ? C.primaryD : C.line}`, borderRadius:10, overflow:'hidden', display:'flex', flexDirection:'column', transition:'border-color 0.2s' }}>
       {/* Header colorido */}
-      <div style={{ height:100, background:`linear-gradient(160deg, ${C.bg3} 0%, rgba(196,82,26,0.15) 100%)`, display:'flex', alignItems:'center', justifyContent:'center', position:'relative', fontSize:52 }}>
-        {evento.emoji}
+      <div style={{ height:100, background:`linear-gradient(160deg, ${C.bg3} 0%, rgba(196,82,26,0.15) 100%)`, display:'flex', alignItems:'center', justifyContent:'center', position:'relative', color:C.primaryL }}>
+        <EventIcon size={44} strokeWidth={1.5} />
         <div style={{ position:'absolute', top:10, right:10 }}>
           <span style={{ background:badge.bg, color:badge.color, fontSize:10, fontWeight:700, padding:'3px 8px', borderRadius:3, textTransform:'uppercase', letterSpacing:'1px' }}>{badge.label}</span>
         </div>
@@ -168,7 +172,7 @@ function EventoCard({ evento, onEdit, onDelete, onPublish }: CardProps) {
       {/* Corpo */}
       <div style={{ padding:'20px', flex:1, display:'flex', flexDirection:'column', gap:8 }}>
         <div style={{ fontWeight:800, fontSize:16, color:C.white, lineHeight:1.3 }}>{evento.title}</div>
-        <div style={{ fontSize:13, color:C.gray3 }}>📍 {evento.local} · {evento.time}</div>
+        <div style={{ fontSize:13, color:C.gray3, display:'flex', alignItems:'center', gap:5 }}><MapPin size={13} strokeWidth={1.75} /> {evento.local} · {evento.time}</div>
         {evento.description && <p style={{ fontSize:13, color:C.gray2, lineHeight:1.7, marginTop:2 }}>{evento.description.slice(0,100)}{evento.description.length > 100 ? '...' : ''}</p>}
 
         {/* Inscritos */}
@@ -188,23 +192,23 @@ function EventoCard({ evento, onEdit, onDelete, onPublish }: CardProps) {
       {/* Ações */}
       <div style={{ padding:'12px 16px', borderTop:`1px solid ${C.line}`, display:'flex', gap:8 }}>
         {evento.status === 'rascunho' && (
-          <button onClick={onPublish} style={{ flex:1, background:'rgba(82,183,136,0.1)', border:'1px solid rgba(82,183,136,0.3)', borderRadius:5, color:'#52B788', fontSize:13, fontWeight:700, padding:'8px', cursor:'pointer', fontFamily:'"Inter",system-ui,sans-serif' }}>
-            ↑ Publicar
+          <button onClick={onPublish} style={{ flex:1, background:'rgba(82,183,136,0.1)', border:'1px solid rgba(82,183,136,0.3)', borderRadius:5, color:'#52B788', fontSize:13, fontWeight:700, padding:'8px', cursor:'pointer', fontFamily:'"Inter",system-ui,sans-serif', display:'flex', alignItems:'center', justifyContent:'center', gap:6 }}>
+            <ArrowUp size={14} strokeWidth={2} /> Publicar
           </button>
         )}
         {evento.status === 'publicado' && (
-          <button onClick={() => {}} style={{ flex:1, background:'rgba(91,158,201,0.1)', border:'1px solid rgba(91,158,201,0.3)', borderRadius:5, color:'#5B9EC9', fontSize:13, fontWeight:700, padding:'8px', cursor:'pointer', fontFamily:'"Inter",system-ui,sans-serif' }}>
-            ✓ Encerrar
+          <button onClick={() => {}} style={{ flex:1, background:'rgba(91,158,201,0.1)', border:'1px solid rgba(91,158,201,0.3)', borderRadius:5, color:'#5B9EC9', fontSize:13, fontWeight:700, padding:'8px', cursor:'pointer', fontFamily:'"Inter",system-ui,sans-serif', display:'flex', alignItems:'center', justifyContent:'center', gap:6 }}>
+            <Icons.checkCircle size={14} /> Encerrar
           </button>
         )}
         <button onClick={onEdit} style={{ flex:1, background:'none', border:`1px solid ${C.lineHi}`, borderRadius:5, color:C.gray2, fontSize:13, fontWeight:600, padding:'8px', cursor:'pointer', fontFamily:'"Inter",system-ui,sans-serif', transition:'all 0.15s' }}
           onMouseEnter={e => { e.currentTarget.style.borderColor=C.primary; e.currentTarget.style.color=C.primaryL }}
           onMouseLeave={e => { e.currentTarget.style.borderColor=C.lineHi; e.currentTarget.style.color=C.gray2 }}
         >Editar</button>
-        <button onClick={onDelete} style={{ width:36, height:36, background:'none', border:`1px solid ${C.line}`, borderRadius:5, color:C.gray3, fontSize:16, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', transition:'all 0.15s', flexShrink:0 }}
+        <button onClick={onDelete} style={{ width:36, height:36, background:'none', border:`1px solid ${C.line}`, borderRadius:5, color:C.gray3, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', transition:'all 0.15s', flexShrink:0 }}
           onMouseEnter={e => { e.currentTarget.style.borderColor='rgba(181,72,90,0.4)'; e.currentTarget.style.color='#E07A8A' }}
           onMouseLeave={e => { e.currentTarget.style.borderColor=C.line; e.currentTarget.style.color=C.gray3 }}
-        >🗑</button>
+        ><Icons.trash size={15} /></button>
       </div>
     </div>
   )
@@ -233,7 +237,7 @@ export default function EventosPage() {
       date:        form.date,
       time:        form.time,
       local:       form.local.trim(),
-      emoji:       form.emoji,
+      iconKey:     form.iconKey,
       maxInscritos: form.maxInscritos ? Number(form.maxInscritos) : null,
       status:      form.status,
       createdBy:   appUser?.uid ?? '',
@@ -286,7 +290,7 @@ export default function EventosPage() {
           <p className="page-sub">{eventos.length} eventos · {publicados} publicados</p>
         </div>
         <button onClick={() => setEditing('new')} className="btn-primary" style={{ fontSize:14, padding:'10px 20px', display:'flex', alignItems:'center', gap:8 }}>
-          <span style={{ fontSize:18 }}>+</span> Novo evento
+          <Icons.plus size={16} /> Novo evento
         </button>
       </div>
 
@@ -307,7 +311,10 @@ export default function EventosPage() {
 
       {/* Filtros */}
       <div style={{ display:'flex', gap:10, marginBottom:24, flexWrap:'wrap', alignItems:'center' }}>
-        <input className="field" placeholder="🔍  Buscar evento..." value={search} onChange={e => setSearch(e.target.value)} style={{ maxWidth:260 }} />
+        <div style={{ position:'relative', maxWidth:260 }}>
+          <Icons.search size={15} style={{ position:'absolute', left:12, top:'50%', transform:'translateY(-50%)', color:C.gray3, pointerEvents:'none' }} />
+          <input className="field" placeholder="Buscar evento..." value={search} onChange={e => setSearch(e.target.value)} style={{ paddingLeft:36, width:'100%' }} />
+        </div>
         <div style={{ display:'flex', gap:6 }}>
           {(['todos','rascunho','publicado','encerrado'] as const).map(s => (
             <button key={s} onClick={() => setFilter(s)} style={{ padding:'8px 16px', borderRadius:5, border:`1px solid ${filterStatus===s ? C.primary : C.lineHi}`, background: filterStatus===s ? 'rgba(196,82,26,0.1)' : 'none', color: filterStatus===s ? C.primaryL : C.gray2, fontSize:13, fontWeight:600, cursor:'pointer', fontFamily:'"Inter",system-ui,sans-serif', textTransform:'capitalize', minHeight:44 }}>
@@ -325,7 +332,7 @@ export default function EventosPage() {
         </div>
       ) : filtered.length === 0 ? (
         <div className="card" style={{ padding:'56px 24px', textAlign:'center' }}>
-          <div style={{ fontSize:40, marginBottom:12 }}>📅</div>
+          <div style={{ display:'flex', justifyContent:'center', marginBottom:12, color:C.gray3 }}><Icons.calendarDays size={40} /></div>
           <div style={{ fontSize:16, color:C.white, fontWeight:700, marginBottom:8 }}>
             {eventos.length === 0 ? 'Nenhum evento criado' : 'Nenhum resultado'}
           </div>
@@ -333,7 +340,7 @@ export default function EventosPage() {
             {eventos.length === 0 ? 'Crie o primeiro evento da Sozo.' : 'Tente outros filtros.'}
           </p>
           {eventos.length === 0 && (
-            <button onClick={() => setEditing('new')} className="btn-primary" style={{ fontSize:14, padding:'11px 24px' }}>+ Criar primeiro evento</button>
+            <button onClick={() => setEditing('new')} className="btn-primary" style={{ fontSize:14, padding:'11px 24px', display:'inline-flex', alignItems:'center', gap:8 }}><Icons.plus size={15} /> Criar primeiro evento</button>
           )}
         </div>
       ) : (

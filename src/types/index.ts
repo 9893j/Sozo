@@ -59,7 +59,9 @@ export interface Ministerio {
   id:          string
   name:        string
   description: string
-  emoji:       string
+  iconKey:     string
+  /** @deprecated campo legado — mantido apenas para registros antigos do Firestore */
+  emoji?:      string
   liderUid:    string | null
   membersCount: number
   active:      boolean
@@ -76,7 +78,9 @@ export interface Evento {
   date:        string   // ISO
   time:        string   // "19:00"
   local:       string
-  emoji:       string
+  iconKey:     string
+  /** @deprecated campo legado — mantido apenas para registros antigos do Firestore */
+  emoji?:      string
   inscritos:   number
   maxInscritos: number | null
   status:      'rascunho' | 'publicado' | 'encerrado'

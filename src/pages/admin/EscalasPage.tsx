@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { addDoc, updateDoc, doc, collection, serverTimestamp, getDocs, query, orderBy } from 'firebase/firestore'
 import { db } from '@/firebase/config'
 import { C } from '@/lib/tokens'
+import { Icons } from '@/components/ui/icons'
+import { ClipboardList, Pencil } from 'lucide-react'
 import type { Escala, Member } from '@/types'
 
 // ─── Tipos ───────────────────────────────────
@@ -70,7 +72,7 @@ function EscalaModal({ escala, members, onClose, onSave }: ModalProps) {
     <div onClick={onClose} style={{ position:'fixed', inset:0, zIndex:200, background:'rgba(0,0,0,0.75)', backdropFilter:'blur(12px)', display:'flex', alignItems:'center', justifyContent:'center', padding:20 }}>
       <div onClick={e => e.stopPropagation()} style={{ background:C.bg2, border:`1px solid ${C.lineHi}`, borderRadius:10, padding:'36px 32px', maxWidth:500, width:'100%', position:'relative', fontFamily:'"Inter",system-ui,sans-serif', maxHeight:'90vh', overflowY:'auto' }}>
         <div style={{ position:'absolute', top:0, left:0, right:0, height:2, background:`linear-gradient(90deg,transparent,${C.primary},transparent)`, borderRadius:'10px 10px 0 0' }} />
-        <button onClick={onClose} style={{ position:'absolute', top:14, right:14, background:'none', border:'none', color:C.gray2, fontSize:20, cursor:'pointer' }}>✕</button>
+        <button onClick={onClose} style={{ position:'absolute', top:14, right:14, background:'none', border:'none', color:C.gray2, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', width:32, height:32 }}><Icons.close size={18} /></button>
 
         <div style={{ fontSize:11, fontWeight:700, letterSpacing:'3px', textTransform:'uppercase', color:C.primary, marginBottom:6 }}>{escala ? 'Editar escala' : 'Nova escala'}</div>
         <h3 style={{ fontWeight:900, fontSize:22, color:C.white, letterSpacing:'-0.5px', marginBottom:24 }}>
@@ -243,8 +245,8 @@ export default function EscalasPage() {
           {STATUS_OPTS.map(s => <option key={s} value={s} style={{ textTransform:'capitalize' }}>{s}</option>)}
         </select>
         {(filterDate || filterStatus !== 'todos') && (
-          <button onClick={() => { setFilterDate(''); setFilterStatus('todos') }} style={{ background:'none', border:`1px solid ${C.lineHi}`, borderRadius:5, padding:'0 14px', color:C.gray2, fontSize:13, cursor:'pointer', minHeight:48, fontFamily:'"Inter",system-ui,sans-serif' }}>
-            Limpar ✕
+          <button onClick={() => { setFilterDate(''); setFilterStatus('todos') }} style={{ background:'none', border:`1px solid ${C.lineHi}`, borderRadius:5, padding:'0 14px', color:C.gray2, fontSize:13, cursor:'pointer', minHeight:48, fontFamily:'"Inter",system-ui,sans-serif', display:'inline-flex', alignItems:'center', gap:6 }}>
+            Limpar <Icons.close size={13} />
           </button>
         )}
       </div>
@@ -257,7 +259,7 @@ export default function EscalasPage() {
         </div>
       ) : sortedDates.length === 0 ? (
         <div className="card" style={{ padding:'56px 24px', textAlign:'center' }}>
-          <div style={{ fontSize:40, marginBottom:12 }}>📋</div>
+          <div style={{ display:'flex', justifyContent:'center', marginBottom:12, color:C.gray3 }}><ClipboardList size={36} strokeWidth={1.5} /></div>
           <div style={{ fontSize:16, color:C.white, fontWeight:700, marginBottom:8 }}>Nenhuma escala encontrada</div>
           <p style={{ fontSize:14, color:C.gray3, marginBottom:20 }}>Comece adicionando membros à escala dos próximos cultos.</p>
           <button onClick={() => setEditing('new')} className="btn-primary" style={{ fontSize:14, padding:'11px 24px' }}>+ Adicionar primeiro</button>
@@ -301,7 +303,7 @@ export default function EscalasPage() {
                             >{s}</button>
                           )
                         })}
-                        <button onClick={() => setEditing(e)} style={{ padding:'6px 10px', borderRadius:4, border:`1px solid ${C.lineHi}`, background:'none', color:C.gray2, fontSize:11, fontWeight:600, cursor:'pointer', fontFamily:'"Inter",system-ui,sans-serif' }}>✎</button>
+                        <button onClick={() => setEditing(e)} style={{ padding:'6px 10px', borderRadius:4, border:`1px solid ${C.lineHi}`, background:'none', color:C.gray2, cursor:'pointer', fontFamily:'"Inter",system-ui,sans-serif', display:'flex', alignItems:'center', justifyContent:'center' }}><Pencil size={13} strokeWidth={1.75} /></button>
                       </div>
                     </div>
                   )

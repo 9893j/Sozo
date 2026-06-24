@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { C } from '@/lib/tokens'
 import { SozoLogo } from '@/components/ui'
+import { Icons } from '@/components/ui/icons'
 import { useAuth } from '@/features/auth/AuthContext'
 
 export default function PublicNav() {
@@ -33,7 +34,7 @@ export default function PublicNav() {
         onClick={() => navigate('/')}
         style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
       >
-        <SozoLogo size={30} />
+        <SozoLogo size={42} />
       </button>
 
       {/* CTA */}
@@ -41,9 +42,9 @@ export default function PublicNav() {
         <button
           onClick={() => navigate('/admin')}
           className="btn-primary"
-          style={{ fontSize: 14, padding: '10px 22px', minHeight: 42 }}
+          style={{ fontSize: 14, padding: '10px 22px', minHeight: 42, display: 'inline-flex', alignItems: 'center', gap: 8 }}
         >
-          Painel →
+          Painel <Icons.arrowRight size={14} />
         </button>
       ) : (
         <button
@@ -52,9 +53,10 @@ export default function PublicNav() {
             background: 'none', border: 'none', cursor: 'pointer',
             color: C.gray2, fontSize: 14, fontWeight: 500,
             fontFamily: '"Inter", system-ui, sans-serif',
+            display: 'inline-flex', alignItems: 'center', gap: 8,
           }}
         >
-          ← Voltar ao site
+          <Icons.arrowLeftSm size={14} /> Voltar ao site
         </button>
       )}
     </nav>

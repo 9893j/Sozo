@@ -4,6 +4,7 @@ import { db } from '@/firebase/config'
 import { usersService } from '@/firebase/firestore'
 import { useAuth } from '@/features/auth/AuthContext'
 import { C } from '@/lib/tokens'
+import { Icons } from '@/components/ui/icons'
 import type { AppUser, UserRole } from '@/types'
 import { ROLE_LABELS } from '@/types'
 
@@ -59,7 +60,7 @@ function UserModal({ user, currentUid, onClose, onSave }: ModalProps) {
         {/* Top bar */}
         <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: `linear-gradient(90deg, transparent, ${C.primary}, transparent)`, borderRadius: '10px 10px 0 0' }} />
 
-        <button onClick={onClose} style={{ position: 'absolute', top: 14, right: 14, background: 'none', border: 'none', color: C.gray2, fontSize: 20, cursor: 'pointer', minWidth: 36, minHeight: 36 }}>✕</button>
+        <button onClick={onClose} style={{ position: 'absolute', top: 14, right: 14, background: 'none', border: 'none', color: C.gray2, cursor: 'pointer', minWidth: 36, minHeight: 36, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Icons.close size={18} /></button>
 
         {/* Avatar + nome */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 28 }}>
@@ -167,7 +168,7 @@ function InviteModal({ onClose }: { onClose: () => void }) {
     <div onClick={onClose} style={{ position: 'fixed', inset: 0, zIndex: 200, background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(12px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
       <div onClick={e => e.stopPropagation()} style={{ background: C.bg2, border: `1px solid ${C.lineHi}`, borderRadius: 10, padding: '36px 32px', maxWidth: 440, width: '100%', position: 'relative', fontFamily: '"Inter",system-ui,sans-serif' }}>
         <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: `linear-gradient(90deg, transparent, ${C.primary}, transparent)`, borderRadius: '10px 10px 0 0' }} />
-        <button onClick={onClose} style={{ position: 'absolute', top: 14, right: 14, background: 'none', border: 'none', color: C.gray2, fontSize: 20, cursor: 'pointer' }}>✕</button>
+        <button onClick={onClose} style={{ position: 'absolute', top: 14, right: 14, background: 'none', border: 'none', color: C.gray2, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', width: 32, height: 32 }}><Icons.close size={18} /></button>
 
         <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '3px', textTransform: 'uppercase', color: C.primary, marginBottom: 8 }}>Convidar pessoa</div>
         <h3 style={{ fontWeight: 900, fontSize: 22, color: C.white, letterSpacing: '-0.5px', marginBottom: 6 }}>Adicionar à comunidade</h3>
@@ -195,7 +196,7 @@ function InviteModal({ onClose }: { onClose: () => void }) {
         </div>
 
         <button onClick={copyLink} className="btn-primary" style={{ width: '100%', fontSize: 15, padding: '13px', minHeight: 48 }}>
-          {copied ? '✓ Mensagem copiada!' : 'Copiar mensagem de convite'}
+          {copied ? <span style={{ display:'inline-flex', alignItems:'center', gap:8 }}><Icons.checkCircle size={15} /> Mensagem copiada!</span> : 'Copiar mensagem de convite'}
         </button>
         <p style={{ fontSize: 12, color: C.gray3, textAlign: 'center', marginTop: 12, lineHeight: 1.6 }}>
           Após o cadastro, defina o role na tabela de usuários.
@@ -279,19 +280,22 @@ export default function UsersPage() {
 
       {/* Filtros */}
       <div style={{ display: 'flex', gap: 10, marginBottom: 20, flexWrap: 'wrap' }}>
-        <input
-          className="field"
-          placeholder="🔍  Buscar por nome ou email..."
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-          style={{ maxWidth: 320 }}
-        />
+        <div style={{ position: 'relative', maxWidth: 320, flex: '1 1 240px' }}>
+          <Icons.search size={15} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: C.gray3, pointerEvents: 'none' }} />
+          <input
+            className="field"
+            placeholder="Buscar por nome ou email..."
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            style={{ width: '100%', paddingLeft: 36 }}
+          />
+        </div>
         {filterRole !== 'all' && (
           <button
             onClick={() => setFilterRole('all')}
             style={{ background: `rgba(196,82,26,0.1)`, border: `1px solid ${C.primaryD}`, borderRadius: 5, padding: '0 14px', color: C.primaryL, fontSize: 13, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8, minHeight: 48, fontFamily: '"Inter",system-ui,sans-serif' }}
           >
-            {ROLE_LABELS[filterRole]} ✕
+            {ROLE_LABELS[filterRole]} <Icons.close size={12} />
           </button>
         )}
       </div>
@@ -363,7 +367,7 @@ export default function UsersPage() {
                         onMouseEnter={e => { e.currentTarget.style.borderColor = C.primary; e.currentTarget.style.color = C.primaryL }}
                         onMouseLeave={e => { e.currentTarget.style.borderColor = C.lineHi; e.currentTarget.style.color = C.gray2 }}
                       >
-                        Editar →
+                        Editar <Icons.arrowRight size={12} />
                       </button>
                     </td>
                   </tr>

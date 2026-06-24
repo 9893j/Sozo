@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { doc, onSnapshot } from 'firebase/firestore'
 import { db } from '@/firebase/config'
 import { C } from '@/lib/tokens'
+import { Icons } from '@/components/ui/icons'
+import { FaInstagram, FaYoutube, FaFacebook, FaLink } from 'react-icons/fa6'
 
 // ─── Tipos ───────────────────────────────────
 interface LiveConfig {
@@ -13,8 +15,8 @@ interface LiveConfig {
   nextTime: string
 }
 
-const PLATFORM_ICON: Record<string, string> = {
-  instagram: '📷', youtube: '▶️', facebook: '📘', outro: '🔗',
+const PLATFORM_ICON: Record<string, React.ComponentType<{ size?: number }>> = {
+  instagram: FaInstagram, youtube: FaYoutube, facebook: FaFacebook, outro: FaLink,
 }
 
 // ─── Banner "Ao Vivo" — usar dentro do Hero da Landing ──
@@ -63,8 +65,8 @@ export function LiveBanner() {
         <span style={{ fontSize: 13, fontWeight: 600, color: C.white }}>
           {config.title || 'Transmissão ao vivo'}
         </span>
-        <span style={{ fontSize: 12, color: C.primaryL, fontWeight: 600 }}>
-          {PLATFORM_ICON[config.platform]} Assistir agora →
+        <span style={{ fontSize: 12, color: C.primaryL, fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+          {(() => { const PlatformIcon = PLATFORM_ICON[config.platform]; return <PlatformIcon size={13} /> })()} Assistir agora <Icons.arrowRight size={13} />
         </span>
 
         <style>{`
@@ -86,7 +88,7 @@ export function LiveBanner() {
         background: 'rgba(255,255,255,0.02)',
         border: '1px solid rgba(255,255,255,0.07)',
       }}>
-        <span style={{ fontSize: 14 }}>{PLATFORM_ICON[config.platform]}</span>
+        <span style={{ fontSize: 14, color: C.gray2, display: 'inline-flex', alignItems: 'center' }}>{(() => { const PlatformIcon = PLATFORM_ICON[config.platform]; return <PlatformIcon size={14} /> })()}</span>
         <span style={{ fontSize: 12, color: C.gray2 }}>
           Próxima transmissão: <strong style={{ color: C.white }}>{config.nextDate}</strong>
           {config.nextTime && <> às <strong style={{ color: C.white }}>{config.nextTime}</strong></>}

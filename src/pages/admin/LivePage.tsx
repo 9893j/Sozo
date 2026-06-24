@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore'
 import { db } from '@/firebase/config'
 import { C } from '@/lib/tokens'
+import { Icons } from '@/components/ui/icons'
+import { FaInstagram, FaYoutube, FaFacebook, FaLink } from 'react-icons/fa6'
 
 // ─── Tipos ───────────────────────────────────
 interface LiveConfig {
@@ -17,11 +19,11 @@ const EMPTY: LiveConfig = {
   isLive: false, platform: 'instagram', link: '', title: 'Culto ao vivo', nextDate: '', nextTime: '19h30',
 }
 
-const PLATFORMS: { key: LiveConfig['platform']; label: string; icon: string; color: string }[] = [
-  { key:'instagram', label:'Instagram', icon:'📷', color:'#E1306C' },
-  { key:'youtube',   label:'YouTube',   icon:'▶️', color:'#FF0000' },
-  { key:'facebook',  label:'Facebook',  icon:'📘', color:'#1877F2' },
-  { key:'outro',     label:'Outro link',icon:'🔗', color:C.gray3   },
+const PLATFORMS: { key: LiveConfig['platform']; label: string; Icon: typeof FaInstagram; color: string }[] = [
+  { key:'instagram', label:'Instagram', Icon:FaInstagram, color:'#E1306C' },
+  { key:'youtube',   label:'YouTube',   Icon:FaYoutube,   color:'#FF0000' },
+  { key:'facebook',  label:'Facebook',  Icon:FaFacebook,  color:'#1877F2' },
+  { key:'outro',     label:'Outro link',Icon:FaLink,      color:C.gray3   },
 ]
 
 // ─── Page ─────────────────────────────────────
@@ -87,7 +89,7 @@ export default function LivePage() {
         <div style={{ width:10, height:10, borderRadius:'50%', background: config.isLive ? '#E07A8A' : C.gray3, flexShrink:0, animation: config.isLive ? 'pulse-live 1.5s infinite' : 'none' }} />
         <div style={{ flex:1 }}>
           <div style={{ fontWeight:700, fontSize:14, color:C.white }}>
-            {config.isLive ? '🔴 Transmissão AO VIVO agora' : 'Nenhuma transmissão ativa'}
+            {config.isLive ? 'Transmissão AO VIVO agora' : 'Nenhuma transmissão ativa'}
           </div>
           <div style={{ fontSize:12, color:C.gray3, marginTop:2 }}>
             {config.isLive ? 'Visível na landing page para todos os visitantes' : 'O banner de "ao vivo" está oculto na landing'}
@@ -119,7 +121,7 @@ export default function LivePage() {
             const active = config.platform === p.key
             return (
               <button key={p.key} onClick={() => set('platform', p.key)} style={{ padding:'14px 8px', borderRadius:8, border:`1px solid ${active ? p.color+'66' : 'rgba(255,255,255,0.07)'}`, background: active ? p.color+'14' : '#0A0704', cursor:'pointer', display:'flex', flexDirection:'column', alignItems:'center', gap:6, transition:'all 0.15s', fontFamily:'"Inter",system-ui,sans-serif' }}>
-                <span style={{ fontSize:20 }}>{p.icon}</span>
+                <p.Icon size={20} color={active ? p.color : C.gray3} />
                 <span style={{ fontSize:11, fontWeight:600, color: active ? C.white : C.gray3 }}>{p.label}</span>
               </button>
             )
@@ -172,7 +174,7 @@ export default function LivePage() {
 
       {/* Erros / sucesso */}
       {error && <div style={{ background:'rgba(181,72,90,0.1)', border:'1px solid rgba(181,72,90,0.28)', borderRadius:6, padding:'10px 14px', fontSize:13, color:'#E07A8A', marginBottom:16 }}>{error}</div>}
-      {saved && <div style={{ background:'rgba(82,183,136,0.1)', border:'1px solid rgba(82,183,136,0.28)', borderRadius:6, padding:'10px 14px', fontSize:13, color:'#52B788', marginBottom:16 }}>✓ Configuração salva — a landing page já está atualizada.</div>}
+      {saved && <div style={{ background:'rgba(82,183,136,0.1)', border:'1px solid rgba(82,183,136,0.28)', borderRadius:6, padding:'10px 14px', fontSize:13, color:'#52B788', marginBottom:16, display:'flex', alignItems:'center', gap:8 }}><Icons.checkCircle size={14} /> Configuração salva — a landing page já está atualizada.</div>}
 
       {/* Salvar */}
       <button onClick={handleSave} disabled={saving} className="btn-primary" style={{ fontSize:14, padding:'12px 28px', minHeight:46 }}>

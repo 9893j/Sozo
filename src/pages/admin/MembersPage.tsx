@@ -3,6 +3,8 @@ import { addDoc, updateDoc, doc, collection, serverTimestamp, getDocs, query, or
 import { db } from '@/firebase/config'
 import { useAuth } from '@/features/auth/AuthContext'
 import { C } from '@/lib/tokens'
+import { Icons } from '@/components/ui/icons'
+import { TriangleAlert } from 'lucide-react'
 import type { Member } from '@/types'
 
 // ─── Tipos locais ─────────────────────────────
@@ -64,7 +66,7 @@ function MemberModal({ member, ministerios, onClose, onSave }: MemberModalProps)
     <div onClick={onClose} style={{ position:'fixed', inset:0, zIndex:200, background:'rgba(0,0,0,0.75)', backdropFilter:'blur(12px)', display:'flex', alignItems:'center', justifyContent:'center', padding:20 }}>
       <div onClick={e => e.stopPropagation()} style={{ background:C.bg2, border:`1px solid ${C.lineHi}`, borderRadius:10, padding:'36px 32px', maxWidth:520, width:'100%', position:'relative', fontFamily:'"Inter",system-ui,sans-serif', maxHeight:'90vh', overflowY:'auto' }}>
         <div style={{ position:'absolute', top:0, left:0, right:0, height:2, background:`linear-gradient(90deg, transparent, ${C.primary}, transparent)`, borderRadius:'10px 10px 0 0' }} />
-        <button onClick={onClose} style={{ position:'absolute', top:14, right:14, background:'none', border:'none', color:C.gray2, fontSize:20, cursor:'pointer' }}>✕</button>
+        <button onClick={onClose} style={{ position:'absolute', top:14, right:14, background:'none', border:'none', color:C.gray2, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', width:32, height:32 }}><Icons.close size={18} /></button>
 
         <div style={{ fontSize:11, fontWeight:700, letterSpacing:'3px', textTransform:'uppercase', color:C.primary, marginBottom:6 }}>
           {member ? 'Editar membro' : 'Novo membro'}
@@ -114,8 +116,8 @@ function MemberModal({ member, ministerios, onClose, onSave }: MemberModalProps)
             <label style={{ fontSize:11, fontWeight:700, letterSpacing:'2px', textTransform:'uppercase', color:C.gray3, display:'block', marginBottom:10 }}>Status</label>
             <div style={{ display:'flex', gap:10 }}>
               {(['ativo','inativo'] as const).map(s => (
-                <button key={s} type="button" onClick={() => set('status', s)} style={{ flex:1, padding:'10px', borderRadius:6, cursor:'pointer', fontFamily:'"Inter",system-ui,sans-serif', fontWeight:700, fontSize:14, border:`1px solid ${form.status===s ? C.primary : C.line}`, background: form.status===s ? 'rgba(196,82,26,0.1)' : C.bg3, color: form.status===s ? C.primaryL : C.gray2, textTransform:'capitalize', transition:'all 0.15s' }}>
-                  {s === 'ativo' ? '✓ Ativo' : '— Inativo'}
+                <button key={s} type="button" onClick={() => set('status', s)} style={{ flex:1, padding:'10px', borderRadius:6, cursor:'pointer', fontFamily:'"Inter",system-ui,sans-serif', fontWeight:700, fontSize:14, border:`1px solid ${form.status===s ? C.primary : C.line}`, background: form.status===s ? 'rgba(196,82,26,0.1)' : C.bg3, color: form.status===s ? C.primaryL : C.gray2, textTransform:'capitalize', transition:'all 0.15s', display:'flex', alignItems:'center', justifyContent:'center', gap:6 }}>
+                  {s === 'ativo' ? <><Icons.checkCircle size={14} /> Ativo</> : '— Inativo'}
                 </button>
               ))}
             </div>
@@ -140,7 +142,7 @@ function ConfirmModal({ name, onConfirm, onClose }: { name:string; onConfirm:()=
   return (
     <div onClick={onClose} style={{ position:'fixed', inset:0, zIndex:300, background:'rgba(0,0,0,0.8)', backdropFilter:'blur(12px)', display:'flex', alignItems:'center', justifyContent:'center', padding:20 }}>
       <div onClick={e => e.stopPropagation()} style={{ background:C.bg2, border:`1px solid rgba(181,72,90,0.4)`, borderRadius:10, padding:'32px', maxWidth:380, width:'100%', fontFamily:'"Inter",system-ui,sans-serif', textAlign:'center' }}>
-        <div style={{ fontSize:40, marginBottom:16 }}>⚠️</div>
+        <div style={{ display:'flex', justifyContent:'center', marginBottom:16, color:'#E07A8A' }}><TriangleAlert size={36} strokeWidth={1.5} /></div>
         <h3 style={{ fontWeight:900, fontSize:20, color:C.white, marginBottom:8 }}>Desativar membro?</h3>
         <p style={{ fontSize:14, color:C.gray2, lineHeight:1.7, marginBottom:24 }}>
           <strong style={{ color:C.white }}>{name}</strong> será marcado como inativo. Você pode reativar a qualquer momento.
@@ -262,7 +264,10 @@ export default function MembersPage() {
 
       {/* Filtros */}
       <div style={{ display:'flex', gap:10, marginBottom:20, flexWrap:'wrap', alignItems:'center' }}>
-        <input className="field" placeholder="🔍  Buscar por nome ou email..." value={search} onChange={e => setSearch(e.target.value)} style={{ maxWidth:280 }} />
+        <div style={{ position:'relative', maxWidth:280, flex:'1 1 200px' }}>
+          <Icons.search size={15} style={{ position:'absolute', left:12, top:'50%', transform:'translateY(-50%)', color:C.gray3, pointerEvents:'none' }} />
+          <input className="field" placeholder="Buscar por nome ou email..." value={search} onChange={e => setSearch(e.target.value)} style={{ paddingLeft:36, width:'100%' }} />
+        </div>
 
         <select className="field" value={filterStatus} onChange={e => setFilterStatus(e.target.value as typeof filterStatus)} style={{ maxWidth:140, cursor:'pointer' }}>
           <option value="todos">Todos</option>
@@ -276,8 +281,8 @@ export default function MembersPage() {
         </select>
 
         {(search || filterStatus !== 'todos' || filterMin) && (
-          <button onClick={() => { setSearch(''); setFilterStatus('todos'); setFilterMin('') }} style={{ background:'none', border:`1px solid ${C.lineHi}`, borderRadius:5, padding:'0 14px', color:C.gray2, fontSize:13, cursor:'pointer', minHeight:48, fontFamily:'"Inter",system-ui,sans-serif' }}>
-            Limpar filtros ✕
+          <button onClick={() => { setSearch(''); setFilterStatus('todos'); setFilterMin('') }} style={{ background:'none', border:`1px solid ${C.lineHi}`, borderRadius:5, padding:'0 14px', color:C.gray2, fontSize:13, cursor:'pointer', minHeight:48, fontFamily:'"Inter",system-ui,sans-serif', display:'inline-flex', alignItems:'center', gap:6 }}>
+            Limpar filtros <Icons.close size={13} />
           </button>
         )}
 
@@ -293,7 +298,7 @@ export default function MembersPage() {
           </div>
         ) : filtered.length === 0 ? (
           <div style={{ padding:'56px 24px', textAlign:'center' }}>
-            <div style={{ fontSize:40, marginBottom:12 }}>👥</div>
+            <div style={{ display:'flex', justifyContent:'center', marginBottom:12, color:C.gray3 }}><Icons.users size={40} /></div>
             <div style={{ fontSize:16, color:C.white, fontWeight:700, marginBottom:8 }}>
               {members.length === 0 ? 'Nenhum membro cadastrado' : 'Nenhum resultado'}
             </div>

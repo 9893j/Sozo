@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { signInWithGoogle, signInWithEmail, registerWithEmail } from '@/firebase/auth'
 import { C, GRAIN } from '@/lib/tokens'
 import { SozoLogo } from '@/components/ui'
+import { Icons } from '@/components/ui/icons'
 
 type Mode = 'login' | 'register'
 
@@ -91,7 +92,7 @@ export default function LoginPage() {
         {/* Logo centralizada */}
         <div style={{ textAlign: 'center', marginBottom: 28 }}>
           <div style={{ display: 'inline-block', marginBottom: 16 }}>
-            <SozoLogo size={40} />
+            <SozoLogo size={56} />
           </div>
           <h1 style={{ fontWeight: 900, fontSize: 24, color: C.white, letterSpacing: '-0.5px', marginBottom: 6 }}>
             {mode === 'login' ? 'Bem-vindo de volta' : 'Criar conta'}
@@ -177,7 +178,11 @@ export default function LoginPage() {
                 <span className="spinner" style={{ width: 18, height: 18, borderWidth: 2 }} />
                 Aguarde...
               </span>
-            ) : mode === 'login' ? 'Entrar no Painel →' : 'Criar minha conta →'}
+            ) : (
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+                {mode === 'login' ? 'Entrar no Painel' : 'Criar minha conta'} <Icons.arrowRight size={15} />
+              </span>
+            )}
           </button>
         </form>
 
@@ -198,11 +203,11 @@ export default function LoginPage() {
         <div style={{ textAlign: 'center', marginTop: 24, paddingTop: 20, borderTop: `1px solid ${C.line}` }}>
           <button
             onClick={() => navigate('/')}
-            style={{ background: 'none', border: 'none', color: C.gray3, fontSize: 13, cursor: 'pointer', fontFamily: '"Inter", system-ui, sans-serif', transition: 'color 0.2s' }}
+            style={{ background: 'none', border: 'none', color: C.gray3, fontSize: 13, cursor: 'pointer', fontFamily: '"Inter", system-ui, sans-serif', transition: 'color 0.2s', display: 'inline-flex', alignItems: 'center', gap: 6 }}
             onMouseEnter={e => (e.currentTarget.style.color = C.gray2)}
             onMouseLeave={e => (e.currentTarget.style.color = C.gray3)}
           >
-            ← Voltar ao site
+            <Icons.arrowLeftSm size={13} /> Voltar ao site
           </button>
         </div>
       </div>

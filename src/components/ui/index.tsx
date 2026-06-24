@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type ReactNode, type CSSProperties } from 'react'
 import { C } from '@/lib/tokens'
+import sozoSymbol from '@/assets/sozo-symbol.png'
 
 // ─── FadeIn wrapper ──────────────────────────
 interface FadeInProps {
@@ -70,32 +71,11 @@ export function H2({ children, center }: { children: ReactNode; center?: boolean
 // ─── Logo SOZO ───────────────────────────────
 export function SozoLogo({ size = 36 }: { size?: number }) {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-      <div style={{
-        width: size, height: size,
-        background: C.primary, borderRadius: 7,
-        display: 'flex', flexDirection: 'column',
-        alignItems: 'center', justifyContent: 'center',
-        flexShrink: 0, padding: 3,
-        boxShadow: `0 0 16px rgba(196,82,26,0.4)`,
-      }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 1 }}>
-          {['S', 'O', 'Z', 'O'].map((l, i) => (
-            <span key={i} style={{ fontSize: size * 0.21, fontWeight: 900, color: C.white, lineHeight: 1.15, textAlign: 'center' }}>
-              {l}
-            </span>
-          ))}
-        </div>
-      </div>
-      <div>
-        <div style={{ fontWeight: 900, fontSize: size * 0.42, color: C.white, letterSpacing: '-0.5px', lineHeight: 1 }}>
-          SOZO
-        </div>
-        <div style={{ fontWeight: 400, fontSize: size * 0.24, color: C.gray2, letterSpacing: '1px', textTransform: 'uppercase', lineHeight: 1 }}>
-          Comunidade Cristã
-        </div>
-      </div>
-    </div>
+    <img
+      src={sozoSymbol}
+      alt="Sozo Comunidade Cristã"
+      style={{ width: size, height: size, objectFit: 'contain', flexShrink: 0 }}
+    />
   )
 }
 

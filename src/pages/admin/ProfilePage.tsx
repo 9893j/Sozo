@@ -5,6 +5,7 @@ import { db } from '@/firebase/config'
 import { auth } from '@/firebase/config'
 import { useAuth } from '@/features/auth/AuthContext'
 import { C } from '@/lib/tokens'
+import { Icons } from '@/components/ui/icons'
 import { ROLE_LABELS } from '@/types'
 import { logOut } from '@/firebase/auth'
 import { useNavigate } from 'react-router-dom'
@@ -101,7 +102,7 @@ export default function ProfilePage() {
           </div>
 
           {error && <div style={{ background:'rgba(181,72,90,0.12)', border:'1px solid rgba(181,72,90,0.3)', borderRadius:5, padding:'10px 14px', fontSize:14, color:'#E07A8A' }}>{error}</div>}
-          {saved  && <div style={{ background:'rgba(82,183,136,0.12)', border:'1px solid rgba(82,183,136,0.3)', borderRadius:5, padding:'10px 14px', fontSize:14, color:'#52B788' }}>✓ Perfil salvo com sucesso.</div>}
+          {saved  && <div style={{ background:'rgba(82,183,136,0.12)', border:'1px solid rgba(82,183,136,0.3)', borderRadius:5, padding:'10px 14px', fontSize:14, color:'#52B788', display:'flex', alignItems:'center', gap:8 }}><Icons.checkCircle size={15} /> Perfil salvo com sucesso.</div>}
 
           <div>
             <button type="submit" disabled={saving} className="btn-primary" style={{ fontSize:15, padding:'13px 32px', minHeight:48 }}>
@@ -133,10 +134,10 @@ export default function ProfilePage() {
       <div className="card" style={{ borderColor:'rgba(181,72,90,0.2)' }}>
         <div style={{ fontSize:11, fontWeight:700, letterSpacing:'3px', textTransform:'uppercase', color:'#E07A8A', marginBottom:12 }}>Sair da conta</div>
         <p style={{ fontSize:14, color:C.gray2, marginBottom:16, lineHeight:1.6 }}>Você será redirecionado para a landing page.</p>
-        <button onClick={handleLogout} style={{ background:'rgba(181,72,90,0.1)', border:'1px solid rgba(181,72,90,0.3)', borderRadius:5, padding:'11px 24px', color:'#E07A8A', fontSize:14, fontWeight:700, cursor:'pointer', fontFamily:'"Inter",system-ui,sans-serif', transition:'all 0.2s' }}
+        <button onClick={handleLogout} style={{ background:'rgba(181,72,90,0.1)', border:'1px solid rgba(181,72,90,0.3)', borderRadius:5, padding:'11px 24px', color:'#E07A8A', fontSize:14, fontWeight:700, cursor:'pointer', fontFamily:'"Inter",system-ui,sans-serif', transition:'all 0.2s', display:'inline-flex', alignItems:'center', gap:8 }}
           onMouseEnter={e => { e.currentTarget.style.background='rgba(181,72,90,0.2)' }}
           onMouseLeave={e => { e.currentTarget.style.background='rgba(181,72,90,0.1)' }}
-        >← Sair da conta</button>
+        ><Icons.arrowLeftSm size={14} /> Sair da conta</button>
       </div>
     </div>
   )

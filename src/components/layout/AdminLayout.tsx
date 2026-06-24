@@ -57,7 +57,7 @@ export default function AdminLayout() {
 
         {/* Logo */}
         <div style={{ padding:'22px 20px 18px', borderBottom:`1px solid rgba(255,255,255,0.04)` }}>
-          <SozoLogo size={30} />
+          <SozoLogo size={40} />
         </div>
 
         {/* Nav */}
@@ -97,7 +97,7 @@ export default function AdminLayout() {
 
         {/* Topbar mobile */}
         <header style={{ display:'none', alignItems:'center', justifyContent:'space-between', padding:'0 20px', height:58, borderBottom:`1px solid rgba(255,255,255,0.04)`, background:'#060402', flexShrink:0 }} className="mobile-header">
-          <SozoLogo size={26} />
+          <SozoLogo size={34} />
           <button onClick={() => setSidebarOpen(true)} style={{ background:'none', border:`1px solid ${C.lineHi}`, borderRadius:6, color:C.gray1, cursor:'pointer', width:36, height:36, display:'flex', alignItems:'center', justifyContent:'center' }}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
               <path d="M3 12h18M3 6h18M3 18h18" />
