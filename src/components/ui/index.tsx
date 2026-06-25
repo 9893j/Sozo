@@ -102,7 +102,7 @@ export function BtnPrimary({ onClick, children, style }: BtnPrimaryProps) {
         border: 'none',
         cursor: 'pointer',
         minHeight: 54,
-        boxShadow: hovered ? `0 0 52px rgba(196,82,26,0.52)` : `0 0 36px rgba(196,82,26,0.32)`,
+        boxShadow: hovered ? `0 0 10px rgba(196,82,26,0.52)` : 'none',
         transform: hovered ? 'translateY(-2px)' : 'none',
         transition: 'all 0.2s',
         ...style,

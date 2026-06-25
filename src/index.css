@@ -88,7 +88,10 @@
     transition: box-shadow 0.2s, transform 0.15s;
     min-height: 44px; padding: 10px 24px;
   }
-  .btn-primary:hover { box-shadow: 0 0 32px rgba(196,82,26,0.45); transform: translateY(-1px); }
+  .btn-primary:hover {
+    box-shadow: 0 0 12px rgba(196,82,26,0.45);
+    transform: translateY(-1px);
+   }
   .btn-primary:active { transform: none; }
   .btn-primary:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
 
