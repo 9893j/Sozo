@@ -1,5 +1,5 @@
 import { createBrowserRouter } from 'react-router-dom'
-import { PrivateRoute, RoleGuard } from '@/features/auth/PrivateRoute'
+import { PrivateRoute } from '@/features/auth/PrivateRoute'
 import { C } from '@/lib/tokens'
 import { Icons } from '@/components/ui/icons'
 

@@ -1,18 +1,6 @@
 // Ícones SVG minimalistas — traço único, 1.5px stroke, estilo enterprise
-// Uso: <Icon name="users" size={16} color="currentColor" />
-import {
-  X, Check, ArrowRight, ArrowLeft, CalendarDays, ThumbsUp, Heart, HandHelping,
-} from 'lucide-react'
-
 interface IconProps { size?: number; color?: string; style?: React.CSSProperties }
 
-const S = (d: string, extra?: string) => ({ size = 16, color = 'currentColor', style }: IconProps) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={style} {...(extra ? { dangerouslySetInnerHTML:{ __html: d } } : {})}>
-    <path d={d} />
-  </svg>
-)
-
-// Componente base mais flexível
 function Icon({ d, d2, size = 16, color = 'currentColor', style }: { d: string; d2?: string; size?: number; color?: string; style?: React.CSSProperties }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={style}>
@@ -23,7 +11,6 @@ function Icon({ d, d2, size = 16, color = 'currentColor', style }: { d: string; 
 }
 
 export const Icons = {
-  // Nav
   dashboard:    (p: IconProps) => <Icon {...p} d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" d2="M9 22V12h6v10" />,
   users:        (p: IconProps) => <Icon {...p} d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" d2="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75M9 7a4 4 0 1 1 0 8 4 4 0 0 1 0-8z" />,
   ministry:     (p: IconProps) => <Icon {...p} d="M18 20V10M12 20V4M6 20v-6" />,
@@ -34,8 +21,6 @@ export const Icons = {
   live:         (p: IconProps) => <Icon {...p} d="M23 7l-7 5 7 5V7z" d2="M1 5h15a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H1V5z" />,
   lock:         (p: IconProps) => <Icon {...p} d="M19 11H5a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2z" d2="M7 11V7a5 5 0 0 1 10 0v4" />,
   user:         (p: IconProps) => <Icon {...p} d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" d2="M12 3a4 4 0 1 0 0 8 4 4 0 0 0 0-8z" />,
-
-  // Ações
   plus:         (p: IconProps) => <Icon {...p} d="M12 5v14M5 12h14" />,
   edit:         (p: IconProps) => <Icon {...p} d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" d2="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />,
   trash:        (p: IconProps) => <Icon {...p} d="M3 6h18M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6M10 11v6M14 11v6M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />,
@@ -61,15 +46,4 @@ export const Icons = {
   invite:       (p: IconProps) => <Icon {...p} d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" d2="M12 3a4 4 0 1 0 0 8 4 4 0 0 0 0-8zM19 8v6M22 11h-6" />,
   activity:     (p: IconProps) => <Icon {...p} d="M22 12h-4l-3 9L9 3l-3 9H2" />,
   layers:       (p: IconProps) => <Icon {...p} d="M12 2L2 7l10 5 10-5-10-5z" d2="M2 17l10 5 10-5M2 12l10 5 10-5" />,
-
-  // UI — close / confirmação / navegação (lucide-react)
-  close:        ({ size = 16, color = 'currentColor', style }: IconProps) => <X size={size} color={color} style={style} strokeWidth={1.75} />,
-  checkCircle:  ({ size = 16, color = 'currentColor', style }: IconProps) => <Check size={size} color={color} style={style} strokeWidth={2} />,
-  arrowRight:   ({ size = 16, color = 'currentColor', style }: IconProps) => <ArrowRight size={size} color={color} style={style} strokeWidth={1.75} />,
-  arrowLeftSm:  ({ size = 16, color = 'currentColor', style }: IconProps) => <ArrowLeft size={size} color={color} style={style} strokeWidth={1.75} />,
-  calendarDays: ({ size = 16, color = 'currentColor', style }: IconProps) => <CalendarDays size={size} color={color} style={style} strokeWidth={1.5} />,
-  thumbsUp:     ({ size = 16, color = 'currentColor', style }: IconProps) => <ThumbsUp size={size} color={color} style={style} strokeWidth={1.75} />,
-  heartFilled:  ({ size = 16, color = 'currentColor', style }: IconProps) => <Heart size={size} color={color} fill={color} style={style} strokeWidth={1.75} />,
-  heartLine:    ({ size = 16, color = 'currentColor', style }: IconProps) => <Heart size={size} color={color} style={style} strokeWidth={1.75} />,
-  prayingHands: ({ size = 16, color = 'currentColor', style }: IconProps) => <HandHelping size={size} color={color} style={style} strokeWidth={1.5} />,
 }

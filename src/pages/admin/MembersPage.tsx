@@ -160,7 +160,6 @@ function ConfirmModal({ name, onConfirm, onClose }: { name:string; onConfirm:()=
 
 // ─── Page principal ───────────────────────────
 export default function MembersPage() {
-  const { appUser } = useAuth()
   const [members, setMembers]           = useState<Member[]>([])
   const [ministerios, setMinterios]     = useState<Ministerio[]>([])
   const [loading, setLoading]           = useState(true)
