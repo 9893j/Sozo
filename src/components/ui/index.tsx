@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type ReactNode, type CSSProperties } from 'react'
 import { C } from '@/lib/tokens'
+import sozoLogo from '@/assets/sozo-symbol.png'
 
 // ─── FadeIn wrapper ──────────────────────────
 interface FadeInProps { id?: string; children: ReactNode; style?: CSSProperties }
@@ -46,30 +47,16 @@ export function H2({ children, center }: { children: ReactNode; center?: boolean
   )
 }
 
-// ─── Logo SOZO — feito em CSS, sem dependência de imagem externa ──
+// ─── Logo SOZO — símbolo (imagem) + wordmark (texto) ──
 export function SozoLogo({ size = 36 }: { size?: number }) {
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-      <div style={{
-        width: size, height: size,
-        background: C.primary, borderRadius: 7,
-        display: 'flex', flexDirection: 'column',
-        alignItems: 'center', justifyContent: 'center',
-        flexShrink: 0, padding: 3,
-        boxShadow: `0 0 16px rgba(196,82,26,0.4)`,
-      }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 1 }}>
-          {['S', 'O', 'Z', 'O'].map((l, i) => (
-            <span key={i} style={{ fontSize: size * 0.21, fontWeight: 900, color: C.white, lineHeight: 1.15, textAlign: 'center' }}>
-              {l}
-            </span>
-          ))}
-        </div>
-      </div>
+      <img src={sozoLogo} alt="Sozo" style={{ width: size, height: size, objectFit: 'contain', flexShrink: 0 }} />
       <div>
-        <div style={{ fontWeight: 900, fontSize: size * 0.42, color: C.white, letterSpacing: '-0.5px', lineHeight: 1 }}>
+        <div style={{ fontWeight: 900, fontSize: size * 0.42, color: C.white, letterSpacing: '-0.5px', lineHeight: 1, marginBottom: 5 }}>
           SOZO
         </div>
+          
         <div style={{ fontWeight: 400, fontSize: size * 0.24, color: C.gray2, letterSpacing: '1px', textTransform: 'uppercase', lineHeight: 1 }}>
           Comunidade Cristã
         </div>
@@ -91,7 +78,7 @@ export function BtnPrimary({ onClick, children, style }: BtnPrimaryProps) {
         background: `linear-gradient(135deg, ${C.primary} 0%, ${C.primaryL} 100%)`,
         color: C.white, padding: '16px 38px', borderRadius: 5,
         fontSize: 17, fontWeight: 700, border: 'none', cursor: 'pointer', minHeight: 54,
-        boxShadow: hovered ? `0 0 52px rgba(196,82,26,0.52)` : `0 0 36px rgba(196,82,26,0.32)`,
+        boxShadow: hovered ? `0 0 12px rgba(20, 10, 5, 0.52)` : `0 0 12px rgba(20, 10, 5, 0.32)`,
         transform: hovered ? 'translateY(-2px)' : 'none',
         transition: 'all 0.2s',
         ...style,

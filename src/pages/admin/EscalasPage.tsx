@@ -16,6 +16,7 @@ const STATUS_BADGE: Record<EscalaStatus, { bg:string; color:string }> = {
   ausente:    { bg:'rgba(181,72,90,0.15)',   color:'#E07A8A' },
 }
 
+const DIAS_SEMANA = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado']
 const HORARIOS    = ['08h00','09h00','10h00','18h00','19h00','19h30','20h00','21h00']
 
 interface EscalaForm {

@@ -1,5 +1,5 @@
+import { PrivateRoute } from "@/features/auth/PrivateRoute";
 import { createBrowserRouter } from 'react-router-dom'
-import { PrivateRoute } from '@/features/auth/PrivateRoute'
 import { C } from '@/lib/tokens'
 import { Icons } from '@/components/ui/icons'
 

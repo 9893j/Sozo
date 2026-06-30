@@ -46,4 +46,12 @@ export const Icons = {
   invite:       (p: IconProps) => <Icon {...p} d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" d2="M12 3a4 4 0 1 0 0 8 4 4 0 0 0 0-8zM19 8v6M22 11h-6" />,
   activity:     (p: IconProps) => <Icon {...p} d="M22 12h-4l-3 9L9 3l-3 9H2" />,
   layers:       (p: IconProps) => <Icon {...p} d="M12 2L2 7l10 5 10-5-10-5z" d2="M2 17l10 5 10-5M2 12l10 5 10-5" />,
+
+  // ── Aliases — nomes alternativos usados em algumas páginas ──
+  // Mantidos para não precisar editar cada arquivo individualmente.
+  close:        (p: IconProps) => <Icon {...p} d="M18 6L6 18M6 6l12 12" />,                              // = x
+  checkCircle:  (p: IconProps) => <Icon {...p} d="M22 11.08V12a10 10 0 1 1-5.93-9.14" d2="M22 4 12 14.01l-3-3" />, // check dentro de círculo
+  arrowLeftSm:  (p: IconProps) => <Icon {...p} d="M19 12H5M12 19l-7-7 7-7" />,                           // = arrowLeft
+  arrowRight:   (p: IconProps) => <Icon {...p} d="M5 12h14M12 5l7 7-7 7" />,
+  calendarDays: (p: IconProps) => <Icon {...p} d="M19 4H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z" d2="M16 2v4M8 2v4M3 10h18M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01" />, // = calendar com pontinhos
 }

@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────
-//  Catálogo de ícones — Ministérios & Eventos
+//  Catálogo de Ícones — Ministérios & Eventos
 //  Fonte única para os seletores de ícone usados
 //  em MinisteriosPage e EventosPage.
 //
@@ -7,11 +7,11 @@
 //  como `iconKey`) e um componente `Icon` (lucide-react).
 // ─────────────────────────────────────────────
 import type { LucideIcon } from 'lucide-react'
+
 import {
   Church, Music, HandHelping, BookOpen, Crown, Flame, Heart, Bird,
   Droplet, Sprout, Star, Drum, Guitar, Mic, Megaphone, Handshake,
-  Baby, Users, Heart as HeartFamily, PartyPopper, Moon, Tent, Globe, Cross,
-  Sparkle,
+  Baby, Users, PartyPopper, Moon, Tent, Globe, Cross, Sparkle,
 } from 'lucide-react'
 
 export interface IconCatalogItem {
@@ -39,7 +39,7 @@ export const MINISTRY_ICONS: IconCatalogItem[] = [
   { key: 'handshake',  Icon: Handshake },
   { key: 'baby',       Icon: Baby },
   { key: 'kids',       Icon: Users },
-  { key: 'family',     Icon: HeartFamily },
+  { key: 'family',     Icon: Heart },
   { key: 'wedding',    Icon: PartyPopper },
   { key: 'tent',       Icon: Tent },
   { key: 'globe',      Icon: Globe },
@@ -77,21 +77,35 @@ export function getIconByKey(key: string | undefined | null): LucideIcon {
 //  para fins de exibição — ao salvar, sempre grava iconKey.
 // ─────────────────────────────────────────────
 const LEGACY_EMOJI_MAP: Record<string, string> = {
-  '⛪': 'church',  '🎵': 'music',   '🙏': 'praying', '📖': 'book',
-  '👑': 'crown',   '🔥': 'flame',   '❤️': 'heart',   '🕊': 'dove',
-  '💧': 'water',   '🌱': 'sprout',  '⭐': 'star',     '🎺': 'mic',
-  '🥁': 'drum',    '🎹': 'music',   '🎸': 'guitar',   '🎤': 'mic',
-  '📢': 'megaphone', '🤝': 'handshake', '👶': 'baby', '🧒': 'kids',
-  '👨‍👩‍👧': 'family', '💒': 'wedding', '🏕': 'tent', '🌍': 'globe',
-  '✝': 'cross',    '🎉': 'party',   '🌙': 'moon',
+  '⛪': 'church',
+  '🎵': 'music',
+  '🙏': 'praying',
+  '📖': 'book',
+  '👑': 'crown',
+  '🔥': 'flame',
+  '❤️': 'heart',
+  '🕊': 'dove',
+  '💧': 'water',
+  '🌱': 'sprout',
+  '⭐': 'star',
+  '🥁': 'drum',
+  '🎹': 'music',
+  '🎸': 'guitar',
+  '🎤': 'mic',
+  '📢': 'megaphone',
+  '👨‍👩‍👧': 'family',
+  '💒': 'wedding',
+  '🏕': 'tent',
+  '🌍': 'globe',
+  '✝': 'cross',
+  '🎉': 'party',
+  '🌙': 'moon',
 }
 
-/**
- * Resolve o ícone de exibição para um item que pode ter
- * `iconKey` (formato novo) ou `emoji` (formato legado).
- */
+/** Resolve um item (ministério/evento) vindo do Firestore para a key de ícone correta,
+ *  seja porque já tem `iconKey`, seja traduzindo o `emoji` legado. */
 export function resolveIconKey(item: { iconKey?: string | null; emoji?: string | null }): string {
   if (item.iconKey) return item.iconKey
-  if (item.emoji) return LEGACY_EMOJI_MAP[item.emoji] ?? 'sparkle'
-  return 'sparkle'
+  if (item.emoji && LEGACY_EMOJI_MAP[item.emoji]) return LEGACY_EMOJI_MAP[item.emoji]
+  return 'church'
 }

@@ -29,15 +29,12 @@ export default function PublicNav() {
       transition: 'all 0.3s ease',
       fontFamily: '"Inter", system-ui, sans-serif',
     }}>
-      {/* Logo — clicável, volta para home */}
       <button
         onClick={() => navigate('/')}
         style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
       >
         <SozoLogo size={42} />
       </button>
-
-      {/* CTA */}
       {firebaseUser ? (
         <button
           onClick={() => navigate('/admin')}
